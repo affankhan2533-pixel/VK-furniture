@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageSquare, ZoomIn } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const galleryItems = [
   {
@@ -113,6 +114,11 @@ const Gallery = () => {
 
   return (
     <div className="bg-cream py-12 fade-in">
+      <SEO
+        title="Handcrafted Furniture Gallery | V.K. Furniture"
+        description="Explore photos of premium custom furniture built at our Mumbai workshop. View detailed designs for teak wood sofa sets, dining tables, and beds."
+        ogImage="/images/workshop.png"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

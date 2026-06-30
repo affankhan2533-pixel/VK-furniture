@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, MessageSquare, ArrowRight, MapPin } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Home = () => {
   const stats = [
@@ -67,8 +68,44 @@ const Home = () => {
     }
   ];
 
+  const homeSchema = {
+    "@context": "https://schema.org",
+    "@type": ["FurnitureStore", "LocalBusiness"],
+    "name": "V.K. Furniture (वी.के. फर्नीचर)",
+    "image": "https://vk-furniture.vercel.app/images/workshop.png",
+    "telephone": "098214 54706",
+    "url": "https://vk-furniture.vercel.app",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Munna seth compound, Lal Bahadur Shastri Marg, Naik Nagar, Dharavi",
+      "addressLocality": "Mumbai",
+      "addressRegion": "MH",
+      "postalCode": "400070",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 19.0563844,
+      "longitude": 72.8596644
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+      ],
+      "opens": "00:00",
+      "closes": "23:59"
+    },
+    "priceRange": "$$"
+  };
+
   return (
     <div className="fade-in">
+      <SEO
+        title="V.K. Furniture | Premium Wholesale & Custom Furniture Mumbai"
+        description="V.K. Furniture (वी.के.फर्नीचर) — Premium custom & wholesale teak wood (sagwan) furniture manufacturer in Dharavi, Mumbai. Wholesale rates for dealers & hotels. Walk in 24/7."
+        schema={homeSchema}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20 md:py-32 bg-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">

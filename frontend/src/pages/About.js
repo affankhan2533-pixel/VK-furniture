@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Users, Clock, Truck, Star, Award, ArrowRight } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const About = () => {
   const values = [
@@ -45,6 +46,11 @@ const About = () => {
 
   return (
     <div className="bg-cream fade-in">
+      <SEO
+        title="Our Dharavi Woodworking Story | V.K. Furniture"
+        description="V.K. Furniture has manufactured premium teak wood (sagwan) furniture in Naik Nagar, Dharavi, Mumbai since 1999. Learn about our traditional joinery and master craftsmen."
+        ogImage="/images/workshop.png"
+      />
 
       {/* Hero Banner */}
       <section className="relative h-[400px] md:h-[500px] overflow-hidden">

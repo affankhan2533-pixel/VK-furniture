@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Phone, MapPin, Clock, Send, Star, AlertCircle, CheckCircle, Navigation } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Contact = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
@@ -69,8 +70,47 @@ const Contact = () => {
     call: "tel:09821454706"
   };
 
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        "@id": "https://vk-furniture.vercel.app/contact",
+        "url": "https://vk-furniture.vercel.app/contact",
+        "name": "Contact V.K. Furniture Showroom Mumbai",
+        "description": "Visit our Mumbai showroom open 24/7 or submit your custom quote request. Find directions, phone numbers, map, reviews and FAQs."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does V.K. Furniture do modular kitchen work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. We specialize strictly in manufacturing standalone furniture pieces (sofas, tables, chairs, beds). We do not do fixed modular kitchens or wardrobes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is the showroom located?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We are located at Munna seth compound, Lal Bahadur Shastri Marg, near Himalaya refrigerator, Naik Nagar, Dharavi, Mumbai, Maharashtra 400070."
+            }
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <div className="bg-cream py-12 fade-in">
+      <SEO
+        title="Contact V.K. Furniture Dharavi Showroom | Mumbai"
+        description="Visit our Mumbai showroom open 24/7 or submit your custom quote request. Find directions, phone numbers, maps, reviews, and FAQs."
+        schema={contactSchema}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MessageSquare, Phone, CheckCircle, ShieldCheck, Truck } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const productsData = [
   {
@@ -241,8 +242,30 @@ const ProductDetail = () => {
   const queryText = `Hi V.K. Furniture, I am interested in details and pricing for "${product.name}" (ID: ${product.id}). Can you please share the lead times and custom specifications?`;
   const whatsappUrl = `https://wa.me/919821454706?text=${encodeURIComponent(queryText)}`;
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "image": product.images.map(img => img.startsWith('http') ? img : `https://vk-furniture.vercel.app${img}`),
+    "description": product.description,
+    "material": product.material,
+    "category": product.category,
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "INR",
+      "lowPrice": "Wholesale Direct Pricing",
+      "offerCount": 1
+    }
+  };
+
   return (
     <div className="bg-cream py-12 fade-in">
+      <SEO
+        title={`${product.name} Specs & Custom Pricing | V.K. Furniture`}
+        description={`Get detailed dimensions, wood finish types, cushion foam densities, and B2B wholesale pricing for ${product.name}. Handcrafted in premium Sagwan teak.`}
+        ogImage={product.images[0]}
+        schema={productSchema}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Back Link */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Search, Filter, MessageSquare } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const productsData = [
   {
@@ -143,8 +144,26 @@ const Catalog = () => {
     setSearchParams(category === 'All' ? {} : { category });
   };
 
+  const catalogSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "V.K. Furniture Collections",
+    "numberOfItems": productsData.length,
+    "itemListElement": productsData.map((item, idx) => ({
+      "@type": "ListItem",
+      "position": idx + 1,
+      "name": item.name,
+      "url": `https://vk-furniture.vercel.app/product/${item.id}`
+    }))
+  };
+
   return (
     <div className="bg-cream py-12 fade-in">
+      <SEO
+        title="Wooden Collections Catalog | V.K. Furniture Mumbai"
+        description="Browse our full B2B furniture catalog. High-grade teakwood (sagwan) sofa sets, glass-top dining tables, storage beds, and accent chairs direct from our workshop."
+        schema={catalogSchema}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}

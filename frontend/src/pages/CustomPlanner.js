@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Settings2, Send, CheckCircle, MessageSquare, AlertCircle } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const CustomPlanner = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
@@ -74,6 +75,10 @@ Please let me know the estimated cost and time to fabricate this design!`;
 
   return (
     <div className="bg-cream py-12 fade-in">
+      <SEO
+        title="Bespoke Teak Furniture Planner | V.K. Furniture"
+        description="Configure your custom sofa size, wood polish shade, cushion density, and fabric styles. Send specifications directly to the craftsman over WhatsApp."
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
