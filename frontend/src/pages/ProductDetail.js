@@ -417,10 +417,10 @@ const ProductDetail = () => {
             <button
               onClick={toggleWishlist}
               data-testid="wishlist-btn"
-              className={`p-2.5 border transition-all ${
+              className={`p-2.5 border transition-all cursor-pointer ${
                 isWishlisted 
-                  ? 'bg-red-50 border-red-200 text-red-500' 
-                  : 'bg-white border-borderSubtle text-stone hover:text-espresso'
+                  ? 'bg-red-50 dark:bg-red-950/20 border-red-200 text-red-500' 
+                  : 'bg-white dark:bg-dark-light border-borderSubtle text-gray hover:text-primary'
               }`}
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
@@ -430,12 +430,12 @@ const ProductDetail = () => {
             <button
               onClick={handleShare}
               data-testid="share-btn"
-              className="p-2.5 border bg-white border-borderSubtle text-stone hover:text-espresso transition-all relative"
+              className="p-2.5 border bg-white dark:bg-dark-light border-borderSubtle text-gray hover:text-primary transition-all relative cursor-pointer"
               title="Share Product"
             >
               <Share2 size={18} />
               {showShareTooltip && (
-                <span className="absolute bottom-full right-0 mb-2 px-2.5 py-1 bg-espresso text-cream text-[10px] uppercase tracking-widest font-sans whitespace-nowrap shadow-md">
+                <span className="absolute bottom-full right-0 mb-2 px-2.5 py-1 bg-dark text-white text-[10px] uppercase tracking-widest font-sans whitespace-nowrap shadow-md">
                   Link Copied!
                 </span>
               )}
@@ -445,7 +445,7 @@ const ProductDetail = () => {
               href="/catalogue.pdf"
               download="VK_Furniture_Catalogue.pdf"
               data-testid="download-catalogue-btn"
-              className="p-2.5 border bg-white border-borderSubtle text-stone hover:text-espresso transition-all"
+              className="p-2.5 border bg-white dark:bg-dark-light border-borderSubtle text-gray hover:text-primary transition-all cursor-pointer"
               title="Download Catalogue PDF"
             >
               <Download size={18} />
@@ -453,7 +453,7 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white border border-borderSubtle p-6 md:p-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white dark:bg-dark-light border border-borderSubtle p-6 md:p-12">
           
           <div className="lg:col-span-6 flex flex-col space-y-4">
             <div className="h-[400px] md:h-[500px] border border-borderSubtle bg-parchment overflow-hidden relative">

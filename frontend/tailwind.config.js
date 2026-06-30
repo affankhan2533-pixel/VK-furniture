@@ -7,19 +7,26 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        cream: "#F9F6F0",
-        espresso: "#2C241B",
-        stone: "#57534E",
-        parchment: "#F4F1EA",
-        teak: "#4A3525",
-        walnut: "#3A291C",
-        brass: "#C59D5F",
-        terracotta: "#B35D43",
-        borderSubtle: "#E5E0D8"
+        primary: "var(--primary)",
+        "primary-dark": "var(--primary-dark)",
+        dark: "var(--dark)",
+        "dark-light": "var(--dark-light)",
+        light: "var(--light)",
+        gray: "var(--gray)",
+        white: "var(--white)",
+        // Compatibility variables
+        cream: "var(--light)",
+        espresso: "var(--dark)",
+        stone: "var(--gray)",
+        parchment: "rgba(176, 141, 87, 0.05)",
+        teak: "var(--primary-dark)",
+        walnut: "#8C6A3F",
+        brass: "var(--primary)",
+        borderSubtle: "var(--border-theme)"
       },
       fontFamily: {
-        serif: ["'Cormorant Garamond'", "serif"],
-        sans: ["'Outfit'", "sans-serif"],
+        serif: ["'Playfair Display'", "serif"],
+        sans: ["'Inter'", "sans-serif"],
         devanagari: ["'Tiro Devanagari Hindi'", "serif"]
       }
     },

@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Star, MessageSquare, ArrowRight, MapPin } from 'lucide-react';
+import { Star, MapPin } from 'lucide-react';
+import gsap from 'gsap';
 import SEO from '../components/SEO';
 
 const Home = () => {
+  const [particles, setParticles] = useState([]);
+
+  useEffect(() => {
+    // Ambient dust particles
+    const dots = Array.from({ length: 15 }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 5}s`,
+      size: `${Math.random() * 4 + 2}px`,
+      duration: `${Math.random() * 5 + 6}s`
+    }));
+    setParticles(dots);
+
+    // GSAP text animations
+    gsap.fromTo('.hero-fade-up', 
+      { opacity: 0, y: 35 },
+      { opacity: 1, y: 0, duration: 1.4, ease: 'power4.out', stagger: 0.15 }
+    );
+    gsap.fromTo('.hero-bg-zoom',
+      { scale: 1.12 },
+      { scale: 1, duration: 2.8, ease: 'power3.out' }
+    );
+  }, []);
+
   const stats = [
     { value: '5.0 ★', label: 'Google Rating' },
     { value: '50+ Units', label: 'Chairs/Stools MOQ' },
@@ -18,7 +43,6 @@ const Home = () => {
       desc: 'L/U-Shape, Recliners, Sofa Cum Beds',
       image: '/images/sofa-teak.png',
       cols: 'md:col-span-8',
-      rows: 'md:row-span-1',
       categoryKey: 'Sofas'
     },
     {
@@ -27,7 +51,6 @@ const Home = () => {
       desc: 'Vintage Royal, Armchairs, Bar Stools',
       image: '/images/grey-armchair.png',
       cols: 'md:col-span-4',
-      rows: 'md:row-span-2',
       categoryKey: 'Chairs'
     },
     {
@@ -36,7 +59,6 @@ const Home = () => {
       desc: 'Solid Teak with custom sizes & premium glass tops',
       image: '/images/dining-4seater.png',
       cols: 'md:col-span-4',
-      rows: 'md:row-span-1',
       categoryKey: 'Tables'
     },
     {
@@ -45,7 +67,6 @@ const Home = () => {
       desc: 'Solid sag wood structure built to last for generations',
       image: '/images/king-bed.png',
       cols: 'md:col-span-8',
-      rows: 'md:row-span-1',
       categoryKey: 'Beds'
     }
   ];
@@ -106,95 +127,104 @@ const Home = () => {
         description="V.K. Furniture (वी.के.फर्नीचर) — Premium custom & wholesale teak wood (sagwan) furniture manufacturer in Dharavi, Mumbai. Wholesale rates for dealers & hotels. Walk in 24/7."
         schema={homeSchema}
       />
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:py-32 bg-cream">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Hero Left Content */}
-          <div className="lg:col-span-7 flex flex-col space-y-6 text-left reveal">
-            <div className="flex items-center gap-2 bg-parchment py-1.5 px-3 border border-borderSubtle w-fit">
-              <Star size={16} fill="#C59D5F" className="text-brass" />
-              <span className="text-sm font-semibold text-espresso">5.0 Star Rated Wholesale Manufacturer</span>
+
+      {/* Cinematic Parallax Hero Section */}
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-espresso">
+        
+        {/* Parallax / Zoom Background */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg"
+            alt="Premium Furniture Setup"
+            className="w-full h-full object-cover opacity-40 hero-bg-zoom"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/45 to-transparent"></div>
+        </div>
+
+        {/* Dust Overlay Animation */}
+        <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+          {particles.map(p => (
+            <div
+              key={p.id}
+              className="particle"
+              style={{
+                left: p.left,
+                animationDelay: p.delay,
+                width: p.size,
+                height: p.size,
+                animationDuration: p.duration
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Content Box */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20 text-center py-24 md:py-36">
+          <div className="flex flex-col items-center space-y-7 max-w-4xl mx-auto">
+            
+            <div className="hero-fade-up flex items-center gap-2 bg-white/5 backdrop-blur-md py-1.5 px-4 border border-white/10 rounded-full w-fit">
+              <Star size={13} fill="#B08D57" className="text-primary" />
+              <span className="text-[10px] uppercase tracking-widest font-bold text-primary font-sans">
+                Genuine Seasoned Sagwan Teak Wood
+              </span>
             </div>
-            
-            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-espresso leading-none">
-              Wholesale & Custom <br />
-              <span className="text-teak">Teakwood Masterpieces</span>
+
+            <h1 className="hero-fade-up font-serif text-5xl md:text-7xl font-bold tracking-tight text-white leading-[1.08]">
+              Crafting <span className="text-primary italic">Timeless</span> Elegance
             </h1>
-            
-            <span className="font-devanagari text-2xl text-brass mt-1 block tracking-wider font-semibold">
+
+            <span className="hero-fade-up font-devanagari text-xl text-primary block tracking-wider font-semibold">
               थोक और कस्टम सागवान (टीक) फर्नीचर निर्माता
             </span>
 
-            <p className="text-lg text-stone font-sans max-w-xl leading-relaxed">
-              We specialize in custom size standalone furniture built in Mumbai since 1999. 
-              Get direct-from-factory pricing on sag wood sofa sets, royal dining tables, beds, and chairs.
+            <p className="hero-fade-up text-sm md:text-base text-white/80 font-sans max-w-2xl leading-relaxed">
+              Serving dealers, hotels, and homeowners since 1999. Get B2B wholesale rates on custom-carved luxury sofas, imperial beds, and glass dining suites.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="hero-fade-up flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center">
               <Link
                 to="/catalog"
                 data-testid="hero-catalog-btn"
-                className="bg-teak text-cream px-8 py-4 rounded-none hover:bg-walnut hover:translate-y-[-2px] transition-all duration-300 font-sans tracking-widest text-center uppercase text-sm font-semibold flex items-center justify-center gap-2"
+                className="luxury-btn shine-hover bg-primary text-white border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold"
               >
-                Browse Masterpieces
-                <ArrowRight size={16} />
+                Explore Collection
               </Link>
-              <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20want%20to%20enquire%20about%20your%20furniture%20wholesale%20catalog."
-                target="_blank"
-                rel="noreferrer"
-                data-testid="hero-whatsapp-btn"
-                className="border border-teak text-teak px-8 py-4 rounded-none hover:bg-teak hover:text-white hover:translate-y-[-2px] transition-all duration-300 font-sans tracking-widest text-center uppercase text-sm font-semibold flex items-center justify-center gap-2"
+              <Link
+                to="/custom-planner"
+                className="luxury-btn border-white/30 text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold hover:bg-white/10"
               >
-                <MessageSquare size={16} />
-                WhatsApp Enquiry
-              </a>
-            </div>
-          </div>
-
-          {/* Hero Right Images / Bento-like offset wrapper */}
-          <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex justify-center reveal reveal-delay-2">
-            <div className="relative w-full max-w-md h-[450px] bg-parchment border border-borderSubtle p-4 shadow-xl image-reveal active">
-              <img
-                src="/images/king-bed.png"
-                alt="Sagwan Showroom"
-                className="w-full h-full object-cover border border-borderSubtle"
-              />
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 shadow-lg border border-borderSubtle hidden sm:block">
-                <p className="text-xs uppercase tracking-widest text-stone font-semibold">Quality Guaranteed</p>
-                <p className="text-sm font-serif font-bold text-espresso">100% Genuine Sagwan Wood</p>
-              </div>
+                Custom Furniture
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats Strip */}
-      <section className="bg-teak text-cream py-8 border-y border-walnut">
+      <section className="bg-dark text-white py-10 border-y border-borderSubtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, i) => (
               <div key={i} className="flex flex-col space-y-1">
-                <span className="font-serif text-3xl md:text-4xl font-bold text-brass">{stat.value}</span>
-                <span className="font-sans text-xs uppercase tracking-widest text-stone-300 font-semibold">{stat.label}</span>
+                <span className="font-serif text-3xl md:text-4xl font-bold text-primary">{stat.value}</span>
+                <span className="font-sans text-[10px] uppercase tracking-widest text-gray font-semibold">{stat.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Collections (Bento Grid) */}
-      <section className="py-20 bg-cream">
+      {/* Bento Grid Featured Collections */}
+      <section className="py-24 bg-light text-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-espresso leading-tight">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold leading-tight">
               Featured Collections
             </h2>
-            <span className="font-devanagari text-lg text-brass mt-1 block tracking-wider font-semibold">
+            <span className="font-devanagari text-lg text-primary mt-1.5 block tracking-wider font-semibold">
               संग्रह श्रेणियों का अन्वेषण करें
             </span>
-            <div className="h-1 w-20 bg-brass mx-auto mt-4"></div>
+            <div className="h-[1px] w-16 bg-primary mx-auto mt-4"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
@@ -203,22 +233,22 @@ const Home = () => {
                 key={i}
                 to={`/catalog?category=${cat.categoryKey}`}
                 data-testid={`featured-cat-${cat.categoryKey.toLowerCase()}`}
-                className={`${cat.cols} relative group overflow-hidden border border-borderSubtle h-[320px] bg-espresso reveal reveal-delay-${i % 4}`}
+                className={`${cat.cols} relative group overflow-hidden border border-borderSubtle h-[340px] bg-dark block reveal reveal-delay-${i % 4}`}
               >
                 <img
                   src={cat.image}
                   alt={cat.title}
-                  className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover opacity-75 group-hover:scale-105 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-espresso via-espresso/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/40 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 p-6 md:p-8 text-left w-full">
-                  <span className="font-devanagari text-xs text-brass block uppercase tracking-wider mb-1 font-semibold">
+                  <span className="font-devanagari text-xs text-primary block uppercase tracking-wider mb-1 font-semibold">
                     {cat.hindi}
                   </span>
                   <h3 className="font-serif text-2xl md:text-3xl text-white font-bold leading-tight">
                     {cat.title}
                   </h3>
-                  <p className="text-stone-300 text-sm font-sans mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-gray text-xs font-sans mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {cat.desc}
                   </p>
                 </div>
@@ -229,16 +259,16 @@ const Home = () => {
       </section>
 
       {/* Review Wall */}
-      <section className="py-20 bg-parchment border-y border-borderSubtle">
+      <section className="py-24 bg-[#FAF7F2] border-y border-borderSubtle text-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-espresso leading-tight">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold leading-tight">
               Words From Our Clients
             </h2>
-            <span className="font-devanagari text-lg text-brass mt-1 block tracking-wider font-semibold">
+            <span className="font-devanagari text-lg text-primary mt-1.5 block tracking-wider font-semibold">
               ग्राहकों के अनुभव और प्रतिक्रियाएं
             </span>
-            <div className="h-1 w-20 bg-brass mx-auto mt-4"></div>
+            <div className="h-[1px] w-16 bg-primary mx-auto mt-4"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -246,19 +276,21 @@ const Home = () => {
               <div
                 key={i}
                 data-testid={`review-card-${i}`}
-                className={`bg-white p-8 border-l-4 border-brass shadow-sm flex flex-col justify-between reveal reveal-delay-${i % 3} glass-hover-card`}
+                className={`bg-white p-8 border-t-2 border-primary shadow-sm flex flex-col justify-between reveal reveal-delay-${i % 3} glass-hover-card`}
               >
-                <div className="flex text-brass mb-4">
-                  {[...Array(5)].map((_, idx) => (
-                    <Star key={idx} size={16} fill="currentColor" />
-                  ))}
+                <div>
+                  <div className="flex text-primary mb-4 justify-start">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star key={idx} size={15} fill="currentColor" />
+                    ))}
+                  </div>
+                  <p className="font-serif text-lg italic leading-relaxed text-dark mb-6 text-left">
+                    "{rev.text}"
+                  </p>
                 </div>
-                <p className="font-serif text-lg text-espresso italic leading-relaxed mb-6">
-                  "{rev.text}"
-                </p>
-                <div className="flex justify-between items-center text-xs uppercase tracking-widest text-stone font-semibold border-t border-cream pt-4">
+                <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray font-bold border-t border-borderSubtle pt-4">
                   <span>{rev.author}</span>
-                  <span className="text-brass">{rev.location}</span>
+                  <span className="text-primary">{rev.location}</span>
                 </div>
               </div>
             ))}
@@ -267,18 +299,18 @@ const Home = () => {
       </section>
 
       {/* Workshop Location CTA Strip */}
-      <section className="py-20 bg-cream">
+      <section className="py-24 bg-light text-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border border-borderSubtle grid grid-cols-1 lg:grid-cols-2">
             <div className="p-8 md:p-16 flex flex-col justify-center space-y-6 text-left">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-espresso leading-tight">
+              <h2 className="font-serif text-3xl md:text-4xl font-bold leading-tight">
                 Visit Our Manufacturing Facility in Dharavi
               </h2>
-              <p className="text-stone font-sans text-base leading-relaxed">
+              <p className="text-gray font-sans text-sm leading-relaxed">
                 See raw premium Sagwan logs turned into fine furniture. Walk into our showroom in Naik Nagar, Dharavi, Mumbai, to experience our collections first-hand and discuss custom dimensions or bulk wholesale order pricing.
               </p>
-              <div className="flex items-start gap-3 text-sm text-espresso font-sans">
-                <MapPin size={18} className="text-brass mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-3 text-xs text-dark font-sans">
+                <MapPin size={18} className="text-primary mt-0.5 flex-shrink-0" />
                 <span>
                   Munna seth compound, Lal Bahadur Shastri Marg, <br />
                   near by Himalaya refrigerator, Naik Nagar, Dharavi, Mumbai
@@ -287,18 +319,17 @@ const Home = () => {
               <Link
                 to="/contact"
                 data-testid="home-directions-btn"
-                className="bg-teak text-cream px-8 py-3.5 w-fit hover:bg-walnut transition-colors uppercase font-sans text-xs font-semibold tracking-wider"
+                className="luxury-btn shine-hover bg-primary text-white border-primary px-8 py-3.5 w-fit uppercase font-sans text-xs font-bold tracking-widest"
               >
-                Get Directions & Contact Form
+                Get Directions
               </Link>
             </div>
             
-            {/* Workshop image */}
-            <div className="h-[350px] lg:h-auto min-h-[300px]">
+            <div className="h-[350px] lg:h-auto min-h-[300px] overflow-hidden image-reveal active">
               <img
                 src="https://images.pexels.com/photos/31567149/pexels-photo-31567149.jpeg"
                 alt="V.K. Furniture Workshop"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
             </div>
           </div>

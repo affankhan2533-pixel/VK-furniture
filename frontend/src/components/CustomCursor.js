@@ -72,7 +72,7 @@ const CustomCursor = () => {
     <>
       {/* Inner Dot */}
       <div
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-brass rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        className="fixed top-0 left-0 w-1.5 h-1.5 bg-primary rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 hidden md:block"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -81,8 +81,8 @@ const CustomCursor = () => {
       />
       {/* Outer Follower Ring */}
       <div
-        className={`fixed top-0 left-0 w-8 h-8 border border-brass rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out hidden md:block ${
-          isHovered ? 'scale-150 bg-brass/10 border-brass/50' : 'scale-100 bg-transparent'
+        className={`fixed top-0 left-0 w-8 h-8 border border-primary rounded-full pointer-events-none z-50 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out hidden md:block ${
+          isHovered ? 'scale-150 bg-primary/10 border-primary/50' : 'scale-100 bg-transparent'
         }`}
         style={{
           left: `${trailPosition.x}px`,

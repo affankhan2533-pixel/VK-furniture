@@ -2,29 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Luxury Color Themes & Typography System */
+:root {
+  --primary: #B08D57;
+  --primary-dark: #8C6A3F;
+  --dark: #111111;
+  --dark-light: #1A1A1A;
+  --light: #F7F3EE;
+  --gray: #8E8E8E;
+  --white: #FFFFFF;
+
+  --bg-theme: var(--light);
+  --text-theme: var(--dark);
+  --border-theme: rgba(176, 141, 87, 0.15);
+}
+
+html.dark {
+  --bg-theme: var(--dark);
+  --text-theme: var(--light);
+  --border-theme: rgba(176, 141, 87, 0.25);
+}
+
 body {
   margin: 0;
-  background-color: #F9F6F0; /* cream */
-  color: #2C241B; /* espresso */
-  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-theme);
+  color: var(--text-theme);
+  font-family: 'Inter', sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.5s cubic-bezier(0.25, 1, 0.5, 1), color 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Base custom selection style */
 ::selection {
-  background-color: #C59D5F; /* brass */
-  color: #FFFFFF;
+  background-color: var(--primary);
+  color: var(--white);
+}
+
+/* Fluid luxury typography scales */
+h1, h2, h3, h4, .font-serif {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: -0.02em;
+}
+
+/* Smooth luxury scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-theme);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 
 /* Page transitions / animations */
 .fade-in {
-  animation: fadeIn 0.8s ease-out forwards;
+  animation: fadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -32,11 +75,11 @@ body {
   }
 }
 
-/* ── Luxury Scroll Reveal & Parallax ─────────────────────────────────────── */
+/* Luxury Scroll Reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(40px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, opacity;
 }
 
@@ -45,36 +88,15 @@ body {
   transform: translateY(0);
 }
 
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
-
-/* Clip-Path/Overflow Text Reveal */
-.text-reveal-container {
-  overflow: hidden;
-  position: relative;
-}
-
-.text-reveal {
-  transform: translateY(100%);
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.active .text-reveal {
-  transform: translateY(0);
-}
-
-/* Image Reveal scale container */
+/* Dynamic Image Zoom Container */
 .image-reveal {
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(44, 36, 27, 0.08);
 }
 
 .image-reveal img {
-  transform: scale(1.12);
-  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1.15);
+  transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 
@@ -82,32 +104,89 @@ body {
   transform: scale(1);
 }
 
-/* ── Premium Micro Interactions & Hover Animations ────────────────────── */
-
-/* Glassmorphism card hover glow */
+/* Premium micro-interactions & cards */
 .glass-hover-card {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(44, 36, 27, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-theme);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-hover-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -10px rgba(74, 53, 37, 0.12);
-  border-color: rgba(197, 157, 95, 0.3); /* brass border on hover */
-  background-color: #ffffff;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary);
 }
 
-/* Furniture image zoom card trigger */
-.furniture-card-img {
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-hover-card:hover .furniture-card-img {
-  transform: scale(1.05);
-}
-
-/* Magnetic button micro pulls */
-.magnetic-btn {
+/* Custom premium buttons */
+.luxury-btn {
   position: relative;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--primary);
+  background: transparent;
+  color: var(--text-theme);
+  z-index: 1;
+}
+
+.luxury-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--primary);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+
+.luxury-btn:hover {
+  color: var(--white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(176, 141, 87, 0.4);
+}
+
+.luxury-btn:hover::before {
+  left: 0;
+}
+
+/* Shine Hover Effect */
+.shine-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-hover::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.13);
+  transform: rotate(30deg);
+  transition: all 0.6s ease;
+}
+
+.shine-hover:hover::after {
+  left: 130%;
+}
+
+/* Particle animation for cinematic hero background */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(-80px) rotate(360deg); opacity: 0; }
+}
+
+.particle {
+  position: absolute;
+  bottom: -20px;
+  background: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  animation: float 8s infinite linear;
 }
