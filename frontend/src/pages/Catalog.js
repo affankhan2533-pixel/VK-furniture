@@ -4,6 +4,9 @@ import { Search, Filter, MessageSquare } from 'lucide-react';
 import axios from 'axios';
 import SEO from '../components/SEO';
 
+const CatalogHeroShowcase = React.lazy(() => import('../components/CatalogHeroShowcase'));
+
+
 const productsData = [
   {
     id: 'royal-sagwan-sofa',
@@ -175,18 +178,33 @@ const Catalog = () => {
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="text-left border-b border-borderSubtle pb-8 mb-12 max-w-3xl">
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-espresso dark:text-light">
-            Our Masterpieces
-          </h1>
-          <span className="font-devanagari text-base md:text-lg text-primary mt-2 block tracking-wider font-semibold">
-            कस्टम और थोक फर्नीचर संग्रह
-          </span>
-          <p className="text-[#5B5048] dark:text-[#FAF7F2] font-sans text-[15px] md:text-base max-w-2xl mt-4 leading-relaxed font-medium">
-            Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer B2B wholesale rates and custom sizing adjustments.
-          </p>
+        {/* Header Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center border-b border-borderSubtle pb-12 mb-12">
+          {/* Left Column: Title & Text */}
+          <div className="lg:col-span-7 text-left space-y-4">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-espresso dark:text-light">
+              Our Masterpieces
+            </h1>
+            <span className="font-devanagari text-base md:text-lg text-primary mt-2 block tracking-wider font-semibold">
+              कस्टम और थोक फर्नीचर संग्रह
+            </span>
+            <p className="text-[#5B5048] dark:text-[#FAF7F2] font-sans text-[15px] md:text-base leading-relaxed font-medium max-w-2xl">
+              Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer B2B wholesale rates and custom sizing adjustments.
+            </p>
+          </div>
+
+          {/* Right Column: Premium Showcase */}
+          <div className="lg:col-span-5 w-full">
+            <React.Suspense fallback={
+              <div className="w-full h-[400px] flex items-center justify-center text-xs uppercase tracking-widest font-sans font-bold text-primary animate-pulse border border-borderSubtle rounded-[24px] bg-white dark:bg-dark-light">
+                Loading Showcase...
+              </div>
+            }>
+              <CatalogHeroShowcase />
+            </React.Suspense>
+          </div>
         </div>
+
 
         {/* Filter Controls */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16">
