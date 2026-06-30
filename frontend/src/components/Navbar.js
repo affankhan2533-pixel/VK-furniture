@@ -78,24 +78,28 @@ const Navbar = () => {
   return (
     <>
       <nav 
-        className={`sticky top-0 z-40 transition-all duration-300 ease-in-out ${
+        className={`sticky top-0 z-40 transition-all duration-300 ease-in-out h-[60px] md:h-[68px] lg:h-[78px] flex items-center ${
           scrolled
-            ? 'bg-[#2B2621]/95 backdrop-blur-md py-4 border-b border-white/10 shadow-md'
-            : 'bg-transparent py-6 border-b border-transparent'
+            ? 'bg-[#2F241E]/95 backdrop-blur-md border-b border-white/10 shadow-md text-white'
+            : 'bg-[#F8F6F2] border-b border-borderSubtle text-[#2B2B2B]'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex items-center justify-between h-full">
 
             {/* Brand Logo */}
-            <div className="flex-shrink-0">
-              <Link to="/" className="flex flex-col text-left group" data-testid="logo-link">
-                <span className={`font-serif text-2xl md:text-3xl font-bold tracking-wide transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white' : 'text-espresso dark:text-light'
+            <div className="flex-shrink-0 flex items-center">
+              <Link 
+                to="/" 
+                className="flex flex-col text-left group h-[42px] md:h-[48px] lg:h-[58px] justify-center transition-all duration-300" 
+                data-testid="logo-link"
+              >
+                <span className={`font-serif text-xl md:text-2xl lg:text-3xl font-bold tracking-wide transition-colors duration-300 ease-in-out leading-none ${
+                  scrolled ? 'text-white' : 'text-[#2B2B2B]'
                 }`}>
                   V.K. Furniture
                 </span>
-                <span className="font-devanagari text-xs text-primary tracking-wider font-semibold">
+                <span className="font-devanagari text-[9px] md:text-[10px] text-primary tracking-wider font-semibold mt-1 transition-colors duration-300">
                   वी.के. फर्नीचर
                 </span>
               </Link>
@@ -113,7 +117,7 @@ const Navbar = () => {
                       ? 'text-primary font-bold'
                       : scrolled
                         ? 'text-white/90 hover:text-primary'
-                        : 'text-espresso/80 dark:text-light/80 hover:text-primary'
+                        : 'text-[#2B2B2B]/90 hover:text-primary'
                   } before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-primary before:transition-all before:duration-300 ${
                     isActive(link.path) ? 'before:w-full' : 'hover:before:w-full'
                   }`}
@@ -127,7 +131,7 @@ const Navbar = () => {
                 to="/cart"
                 data-testid="nav-cart"
                 className={`relative flex items-center p-2 transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
                 }`}
                 title="View Cart"
               >
@@ -143,7 +147,7 @@ const Navbar = () => {
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`p-2 transition-colors duration-300 ease-in-out cursor-pointer bg-transparent border-none ${
-                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
                 title="Toggle dark mode"
@@ -155,7 +159,7 @@ const Navbar = () => {
               <Link
                 to="/contact"
                 data-testid="nav-quote-btn"
-                className="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-dark px-4 py-2.5 transition-all duration-300 ease-in-out font-sans text-[10px] uppercase tracking-widest font-bold shine-hover"
+                className="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-dark px-4 py-2.5 transition-all duration-300 ease-in-out font-sans text-[10px] uppercase tracking-widest font-bold shine-hover animate-pulse-subtle"
               >
                 Get Quote
                 <ArrowRight size={12} />
@@ -167,7 +171,7 @@ const Navbar = () => {
               <Link
                 to="/cart"
                 className={`relative p-2 transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
                 }`}
               >
                 <ShoppingBag size={18} />
@@ -181,7 +185,7 @@ const Navbar = () => {
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
               >
@@ -192,7 +196,7 @@ const Navbar = () => {
                 onClick={() => setIsOpen(!isOpen)}
                 data-testid="mobile-menu-toggle"
                 className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white hover:text-primary' : 'text-espresso dark:text-light hover:text-primary'
+                  scrolled ? 'text-white hover:text-primary' : 'text-[#2B2B2B] hover:text-primary'
                 }`}
                 aria-label="Toggle Menu"
               >
@@ -202,7 +206,6 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-
 
       {/* Mobile Slide-From-Right Drawer Menu */}
       <div 
@@ -262,4 +265,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
