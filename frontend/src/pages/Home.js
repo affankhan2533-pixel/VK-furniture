@@ -136,9 +136,9 @@ const Home = () => {
           <img
             src="https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg"
             alt="Premium Furniture Setup"
-            className="w-full h-full object-cover opacity-20 hero-bg-zoom"
+            className="w-full h-full object-cover opacity-50 hero-bg-zoom"
           />
-          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         {/* Dust Overlay Animation */}
@@ -162,22 +162,22 @@ const Home = () => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-30 text-center py-24 md:py-36">
           <div className="flex flex-col items-center space-y-7 max-w-4xl mx-auto">
             
-            <div className="hero-fade-up flex items-center gap-2 bg-white/10 backdrop-blur-md py-1.5 px-4 border border-white/20 rounded-full w-fit">
+            <div className="hero-fade-up flex items-center gap-2 bg-white/15 backdrop-blur-md py-1.5 px-4 border border-white/25 rounded-full w-fit">
               <Star size={13} fill="#B08D57" className="text-primary" />
-              <span className="text-[10px] uppercase tracking-widest font-bold text-primary font-sans">
+              <span className="text-[10px] uppercase tracking-widest font-bold text-primary font-sans hero-text-shadow">
                 Genuine Seasoned Sagwan Teak Wood
               </span>
             </div>
 
-            <h1 className="hero-fade-up font-serif text-5xl md:text-7xl font-bold tracking-tight text-white leading-[1.08]">
+            <h1 className="hero-fade-up font-serif text-5xl md:text-7xl font-bold tracking-tight text-white leading-[1.08] hero-text-shadow">
               Crafting <span className="text-primary italic">Timeless</span> Elegance
             </h1>
 
-            <span className="hero-fade-up font-devanagari text-xl text-primary block tracking-wider font-semibold">
+            <span className="hero-fade-up font-devanagari text-xl text-primary block tracking-wider font-semibold hero-text-shadow">
               थोक और कस्टम सागवान (टीक) फर्नीचर निर्माता
             </span>
 
-            <p className="hero-fade-up text-sm md:text-base text-white font-medium font-sans max-w-2xl leading-relaxed md:leading-[1.7] tracking-wide">
+            <p className="hero-fade-up text-sm md:text-base text-white font-semibold font-sans max-w-2xl leading-relaxed md:leading-[1.7] tracking-wide hero-text-shadow">
               Serving dealers, hotels, and homeowners since 1999. Get B2B wholesale rates on custom-carved luxury sofas, imperial beds, and glass dining suites.
             </p>
 
@@ -201,6 +201,7 @@ const Home = () => {
       </section>
 
 
+
       {/* Stats Strip */}
       <section className="bg-dark text-white py-10 border-y border-borderSubtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -208,7 +209,7 @@ const Home = () => {
             {stats.map((stat, i) => (
               <div key={i} className="flex flex-col space-y-1">
                 <span className="font-serif text-3xl md:text-4xl font-bold text-primary">{stat.value}</span>
-                <span className="font-sans text-[10px] uppercase tracking-widest text-gray font-semibold">{stat.label}</span>
+                <span className="font-sans text-[10px] uppercase tracking-widest text-gray-400 font-semibold">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -249,7 +250,7 @@ const Home = () => {
                   <h3 className="font-serif text-2xl md:text-3xl text-white font-bold leading-tight">
                     {cat.title}
                   </h3>
-                  <p className="text-gray text-xs font-sans mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="text-gray-300 text-xs font-sans mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {cat.desc}
                   </p>
                 </div>
@@ -289,7 +290,7 @@ const Home = () => {
                     "{rev.text}"
                   </p>
                 </div>
-                <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray font-bold border-t border-borderSubtle pt-4">
+                <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray-500 font-bold border-t border-borderSubtle pt-4">
                   <span>{rev.author}</span>
                   <span className="text-primary">{rev.location}</span>
                 </div>
@@ -307,7 +308,7 @@ const Home = () => {
               <h2 className="font-serif text-3xl md:text-4xl font-bold leading-tight">
                 Visit Our Manufacturing Facility in Dharavi
               </h2>
-              <p className="text-gray font-sans text-sm leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 font-sans text-sm leading-relaxed">
                 See raw premium Sagwan logs turned into fine furniture. Walk into our showroom in Naik Nagar, Dharavi, Mumbai, to experience our collections first-hand and discuss custom dimensions or bulk wholesale order pricing.
               </p>
               <div className="flex items-start gap-3 text-xs text-dark font-sans">

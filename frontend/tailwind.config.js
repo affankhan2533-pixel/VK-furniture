@@ -12,7 +12,7 @@ module.exports = {
         dark: "var(--dark)",
         "dark-light": "var(--dark-light)",
         light: "var(--light)",
-        gray: "var(--gray)",
+        brandGray: "var(--gray)",
         white: "var(--white)",
         // Compatibility variables
         cream: "var(--light)",

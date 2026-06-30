@@ -174,7 +174,7 @@ const Catalog = () => {
           <span className="font-devanagari text-lg text-primary mt-1.5 block tracking-wider font-semibold">
             कस्टम और थोक फर्नीचर संग्रह
           </span>
-          <p className="text-gray font-sans text-sm max-w-xl mt-3 leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-300 font-sans text-sm max-w-xl mt-3 leading-relaxed">
             Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer bulk wholesaling and custom sizing adjustments.
           </p>
         </div>
@@ -184,7 +184,7 @@ const Catalog = () => {
           
           {/* Category Chips */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            <Filter size={15} className="text-gray flex-shrink-0 mr-1.5" />
+            <Filter size={15} className="text-gray-500 flex-shrink-0 mr-1.5" />
             {categories.map(cat => (
               <button
                 key={cat}
@@ -193,7 +193,7 @@ const Catalog = () => {
                 className={`px-6 py-2 border font-sans text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-primary text-white border-primary'
-                    : 'bg-white dark:bg-dark-light text-gray border-borderSubtle hover:border-primary hover:text-dark'
+                    : 'bg-white dark:bg-dark-light text-gray-500 border-borderSubtle hover:border-primary hover:text-dark'
                 }`}
               >
                 {cat}
@@ -209,11 +209,12 @@ const Catalog = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               data-testid="catalog-search-input"
-              className="w-full pl-10 pr-4 py-3 bg-white dark:bg-dark-light border border-borderSubtle font-sans text-xs focus:outline-none focus:border-primary text-dark placeholder-gray/60"
+              className="w-full pl-10 pr-4 py-3 bg-white dark:bg-dark-light border border-borderSubtle font-sans text-xs focus:outline-none focus:border-primary text-dark placeholder-gray-400"
             />
-            <Search className="absolute left-3.5 top-3.5 text-gray" size={15} />
+            <Search className="absolute left-3.5 top-3.5 text-gray-500" size={15} />
           </div>
         </div>
+
 
         {/* Product Grid */}
         {filteredProducts.length > 0 ? (
@@ -246,7 +247,7 @@ const Catalog = () => {
                     {product.material}
                   </p>
 
-                  <p className="text-gray font-sans text-xs leading-relaxed flex-grow">
+                  <p className="text-gray-500 dark:text-gray-400 font-sans text-xs leading-relaxed flex-grow">
                     {product.description}
                   </p>
 
@@ -280,7 +281,7 @@ const Catalog = () => {
           </div>
         ) : (
           <div className="text-center py-20 bg-white dark:bg-dark-light border border-borderSubtle">
-            <p className="text-gray font-serif text-lg">No items match your filter criteria.</p>
+            <p className="text-gray-500 font-serif text-lg">No items match your filter criteria.</p>
             <button
               onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
               className="mt-4 bg-primary text-white px-6 py-2.5 text-xs uppercase font-sans tracking-widest font-bold border-none cursor-pointer"

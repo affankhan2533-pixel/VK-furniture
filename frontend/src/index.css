@@ -190,3 +190,9 @@ h1, h2, h3, h4, .font-serif {
   opacity: 0;
   animation: float 8s infinite linear;
 }
+
+/* Premium Contrast Shadows */
+.hero-text-shadow {
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+}
+
