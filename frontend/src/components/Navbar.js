@@ -9,6 +9,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('vk_theme') || 'light');
 
+  // Track shopping cart quantity
   useEffect(() => {
     const updateCartCount = () => {
       const savedCart = JSON.parse(localStorage.getItem('vk_cart') || '[]');
@@ -26,7 +27,7 @@ const Navbar = () => {
     };
   }, []);
 
-  // Sticky scroll detector
+  // Sticky scroll offset listener
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 30) {
@@ -39,7 +40,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Theme manager
+  // Theme configuration manager
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -48,6 +49,18 @@ const Navbar = () => {
     }
     localStorage.setItem('vk_theme', theme);
   }, [theme]);
+
+  // Mobile scroll lock when side menu is active
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const navLinks = [
     { name: 'Home', path: '/', id: 'nav-home' },
@@ -63,151 +76,189 @@ const Navbar = () => {
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
   return (
-    <nav 
-      className={`sticky top-0 z-40 transition-all duration-500 border-b ${
-        scrolled
-          ? 'bg-light/80 dark:bg-dark-light/80 backdrop-blur-md py-4 border-borderSubtle shadow-md'
-          : 'bg-transparent py-6 border-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14">
+    <>
+      <nav 
+        className={`sticky top-0 z-40 transition-all duration-500 ${
+          scrolled
+            ? 'bg-light/90 dark:bg-[#2B2621]/90 backdrop-blur-md py-4 border-b border-borderSubtle shadow-md'
+            : 'bg-transparent py-6 border-b border-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14">
 
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="flex flex-col text-left group" data-testid="logo-link">
-              <span className="font-serif text-2xl md:text-3xl font-bold tracking-wide text-espresso transition-colors duration-300">
-                V.K. Furniture
-              </span>
-              <span className="font-devanagari text-xs text-brass tracking-wider font-semibold">
-                वी.के. फर्नीचर
-              </span>
-            </Link>
-          </div>
+            {/* Brand Logo */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex flex-col text-left group" data-testid="logo-link">
+                <span className={`font-serif text-2xl md:text-3xl font-bold tracking-wide transition-colors duration-300 ${
+                  scrolled ? 'text-espresso dark:text-light' : 'text-white'
+                }`}>
+                  V.K. Furniture
+                </span>
+                <span className="font-devanagari text-xs text-primary tracking-wider font-semibold">
+                  वी.के. फर्नीचर
+                </span>
+              </Link>
+            </div>
 
-          {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center space-x-7">
-            {navLinks.map((link) => (
+            {/* Desktop Navigation Links */}
+            <div className="hidden lg:flex items-center space-x-7">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  data-testid={link.id}
+                  className={`relative font-sans font-semibold text-[11px] uppercase tracking-widest transition-colors duration-300 pb-1.5 ${
+                    isActive(link.path)
+                      ? 'text-primary'
+                      : scrolled
+                        ? 'text-espresso/75 dark:text-light/75 hover:text-primary'
+                        : 'text-white/85 hover:text-primary'
+                  } before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-primary before:transition-all before:duration-300 ${
+                    isActive(link.path) ? 'before:w-full' : 'hover:before:w-full'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+
+              {/* Shopping Bag Button */}
               <Link
-                key={link.path}
-                to={link.path}
-                data-testid={link.id}
-                className={`relative font-sans font-semibold text-[11px] uppercase tracking-widest transition-colors duration-300 pb-1.5 ${
-                  isActive(link.path)
-                    ? 'text-primary'
-                    : 'text-espresso/70 hover:text-primary'
-                } before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-primary before:transition-all before:duration-300 ${
-                  isActive(link.path) ? 'before:w-full' : 'hover:before:w-full'
+                to="/cart"
+                data-testid="nav-cart"
+                className={`relative flex items-center p-2 transition-colors duration-300 ${
+                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                }`}
+                title="View Cart"
+              >
+                <ShoppingBag size={17} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Light / Dark Mode Toggle */}
+              <button
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                className={`p-2 transition-colors duration-300 cursor-pointer bg-transparent border-none ${
+                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                }`}
+                aria-label="Toggle dark mode"
+                title="Toggle dark mode"
+              >
+                {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
+              </button>
+
+              {/* Get Quote Action Button */}
+              <Link
+                to="/contact"
+                data-testid="nav-quote-btn"
+                className="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-dark px-4 py-2.5 transition-all duration-300 font-sans text-[10px] uppercase tracking-widest font-bold shine-hover"
+              >
+                Get Quote
+                <ArrowRight size={12} />
+              </Link>
+            </div>
+
+            {/* Mobile Controls */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <Link
+                to="/cart"
+                className={`relative p-2 transition-colors ${
+                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
                 }`}
               >
-                {link.name}
+                <ShoppingBag size={18} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                    {cartCount}
+                  </span>
+                )}
               </Link>
-            ))}
 
-            {/* Shopping Cart */}
-            <Link
-              to="/cart"
-              data-testid="nav-cart"
-              className="relative text-espresso/70 hover:text-primary flex items-center p-2 transition-colors duration-300"
-              title="View Cart"
-            >
-              <ShoppingBag size={17} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
+              <button
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                className={`p-2 bg-transparent border-none cursor-pointer ${
+                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                }`}
+                aria-label="Toggle dark mode"
+              >
+                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
 
-            {/* Theme Toggle */}
-            <button
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="p-2 text-espresso/70 hover:text-primary transition-colors duration-300 cursor-pointer bg-transparent border-none"
-              aria-label="Toggle dark mode"
-              title="Toggle dark mode"
-            >
-              {theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}
-            </button>
-
-            {/* B2B Quote Action CTA */}
-            <Link
-              to="/contact"
-              data-testid="nav-quote-btn"
-              className="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-dark px-4 py-2.5 transition-all duration-300 font-sans text-[10px] uppercase tracking-widest font-bold shine-hover"
-            >
-              Get Quote
-              <ArrowRight size={12} />
-            </Link>
-          </div>
-
-          {/* Mobile Right Controls */}
-          <div className="flex items-center gap-3 lg:hidden">
-            <Link
-              to="/cart"
-              className="relative text-espresso/70 hover:text-primary p-2 transition-colors"
-            >
-              <ShoppingBag size={18} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-
-            <button
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="p-2 text-espresso/70 hover:text-primary bg-transparent border-none cursor-pointer"
-              aria-label="Toggle dark mode"
-            >
-              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              data-testid="mobile-menu-toggle"
-              className="text-espresso hover:text-primary transition-colors p-2 bg-transparent border-none cursor-pointer"
-              aria-label="Toggle Menu"
-            >
-              {isOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                data-testid="mobile-menu-toggle"
+                className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ${
+                  scrolled ? 'text-espresso dark:text-light hover:text-primary' : 'text-white hover:text-primary'
+                }`}
+                aria-label="Toggle Menu"
+              >
+                {isOpen ? <X size={22} /> : <Menu size={22} />}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="lg:hidden bg-light/95 dark:bg-dark-light/95 backdrop-blur-md border-b border-borderSubtle fade-in">
-          <div className="px-4 pt-4 pb-8 flex flex-col items-center space-y-2">
+      {/* Mobile Slide-From-Right Drawer Menu */}
+      <div 
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300 lg:hidden ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`} 
+        onClick={() => setIsOpen(false)} 
+      />
+      <div 
+        className={`fixed top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-light dark:bg-[#3A3028] z-50 p-6 flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div>
+          <div className="flex justify-between items-center border-b border-borderSubtle pb-4 mb-6">
+            <span className="font-serif text-lg font-bold text-espresso dark:text-light">Menu</span>
+            <button 
+              onClick={() => setIsOpen(false)} 
+              className="text-espresso dark:text-light hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-1"
+            >
+              <X size={22} />
+            </button>
+          </div>
+
+          <nav className="flex flex-col space-y-4 text-left">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 data-testid={`${link.id}-mobile`}
                 onClick={() => setIsOpen(false)}
-                className={`block w-full py-3.5 text-center font-sans font-bold text-xs uppercase tracking-widest transition-colors ${
+                className={`block py-2 text-sm font-sans font-bold uppercase tracking-widest transition-colors ${
                   isActive(link.path)
-                    ? 'text-primary bg-parchment'
-                    : 'text-espresso/70 hover:text-primary'
+                    ? 'text-primary'
+                    : 'text-espresso/70 dark:text-light/70 hover:text-primary'
                 }`}
               >
                 {link.name}
               </Link>
             ))}
-            <div className="pt-4 w-full">
-              <Link
-                to="/contact"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 bg-primary text-white py-3.5 hover:bg-primary-dark transition-all font-sans text-xs uppercase tracking-widest font-bold w-full"
-              >
-                Get Custom Quote
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
+          </nav>
         </div>
-      )}
-    </nav>
+
+        <div className="pt-6 border-t border-borderSubtle">
+          <Link
+            to="/contact"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center justify-center gap-2 bg-primary text-white py-3.5 hover:bg-primary-dark transition-all font-sans text-xs uppercase tracking-widest font-bold w-full"
+          >
+            Get Custom Quote
+            <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    </>
   );
 };
 
 export default Navbar;
+

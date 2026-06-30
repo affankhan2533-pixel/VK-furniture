@@ -129,7 +129,7 @@ const Home = () => {
       />
 
       {/* Cinematic Parallax Hero Section */}
-      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#2B2621]">
+      <section className="relative min-h-[65vh] md:min-h-[75vh] lg:min-h-[95vh] flex items-center justify-center overflow-hidden bg-[#2B2621]">
         
         {/* Parallax / Zoom Background */}
         <div className="absolute inset-0 z-0">
@@ -159,7 +159,7 @@ const Home = () => {
         </div>
 
         {/* Content Box */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-30 text-center py-24 md:py-36">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-30 text-center py-16 md:py-28 lg:py-36">
           <div className="flex flex-col items-center space-y-7 max-w-4xl mx-auto">
             
             <div className="hero-fade-up flex items-center gap-2 bg-white/15 backdrop-blur-md py-1.5 px-4 border border-white/25 rounded-full w-fit">
@@ -169,29 +169,29 @@ const Home = () => {
               </span>
             </div>
 
-            <h1 className="hero-fade-up font-serif text-5xl md:text-7xl font-bold tracking-tight text-white leading-[1.08] hero-text-shadow">
+            <h1 className="hero-fade-up font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] hero-text-shadow">
               Crafting <span className="text-primary italic">Timeless</span> Elegance
             </h1>
 
-            <span className="hero-fade-up font-devanagari text-xl text-primary block tracking-wider font-semibold hero-text-shadow">
+            <span className="hero-fade-up font-devanagari text-lg md:text-xl text-primary block tracking-wider font-semibold hero-text-shadow">
               थोक और कस्टम सागवान (टीक) फर्नीचर निर्माता
             </span>
 
-            <p className="hero-fade-up text-sm md:text-base text-white font-semibold font-sans max-w-2xl leading-relaxed md:leading-[1.7] tracking-wide hero-text-shadow">
+            <p className="hero-fade-up text-xs sm:text-sm md:text-base text-white font-semibold font-sans max-w-2xl leading-relaxed md:leading-[1.7] tracking-wide hero-text-shadow px-2">
               Serving dealers, hotels, and homeowners since 1999. Get B2B wholesale rates on custom-carved luxury sofas, imperial beds, and glass dining suites.
             </p>
 
-            <div className="hero-fade-up flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center">
+            <div className="hero-fade-up flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center px-4 sm:px-0">
               <Link
                 to="/catalog"
                 data-testid="hero-catalog-btn"
-                className="bg-primary hover:bg-primary-dark text-white border border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
+                className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white border border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
               >
                 Explore Collection
               </Link>
               <Link
                 to="/custom-planner"
-                className="border border-white hover:border-primary text-white hover:bg-primary hover:text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
+                className="w-full sm:w-auto border border-white hover:border-primary text-white hover:bg-primary hover:text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
               >
                 Custom Furniture
               </Link>
@@ -199,6 +199,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+
 
       {/* Stats Strip */}
       <section className="bg-[#3A3028] text-white py-10 border-t border-primary/20 border-b border-primary/10 shadow-inner relative z-20">
