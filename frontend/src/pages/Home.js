@@ -216,49 +216,74 @@ const Home = () => {
       </section>
 
 
-      {/* Bento Grid Featured Collections */}
+      {/* Balanced Grid Featured Collections */}
       <section className="py-24 bg-light text-dark">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold leading-tight">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold leading-tight tracking-wide text-espresso dark:text-light">
               Featured Collections
             </h2>
-            <span className="font-devanagari text-lg text-primary mt-1.5 block tracking-wider font-semibold">
+            <span className="font-devanagari text-base text-primary mt-2 block tracking-wider font-semibold">
               संग्रह श्रेणियों का अन्वेषण करें
             </span>
-            <div className="h-[1px] w-16 bg-primary mx-auto mt-4"></div>
+            <div className="h-[2px] w-20 bg-primary mx-auto mt-4 rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-            {categories.map((cat, i) => (
-              <Link
-                key={i}
-                to={`/catalog?category=${cat.categoryKey}`}
-                data-testid={`featured-cat-${cat.categoryKey.toLowerCase()}`}
-                className={`${cat.cols} relative group overflow-hidden border border-borderSubtle h-[340px] bg-dark block reveal reveal-delay-${i % 4}`}
-              >
-                <img
-                  src={cat.image}
-                  alt={cat.title}
-                  className="w-full h-full object-cover opacity-75 group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/40 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 p-6 md:p-8 text-left w-full">
-                  <span className="font-devanagari text-xs text-primary block uppercase tracking-wider mb-1 font-semibold">
-                    {cat.hindi}
-                  </span>
-                  <h3 className="font-serif text-2xl md:text-3xl text-white font-bold leading-tight">
-                    {cat.title}
-                  </h3>
-                  <p className="text-gray-300 text-xs font-sans mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {cat.desc}
-                  </p>
-                </div>
-              </Link>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {categories.map((cat, i) => {
+              // Custom luxury category labeling
+              let luxuryLabel = 'Luxury furniture collection';
+              if (cat.categoryKey === 'Sofas') luxuryLabel = 'Handcrafted luxury seating';
+              else if (cat.categoryKey === 'Chairs') luxuryLabel = 'Solid teak masterpieces';
+              else if (cat.categoryKey === 'Tables') luxuryLabel = 'Premium dining collections';
+              else if (cat.categoryKey === 'Beds') luxuryLabel = 'Custom bedroom furniture';
+
+              return (
+                <Link
+                  key={i}
+                  to={`/catalog?category=${cat.categoryKey}`}
+                  data-testid={`featured-cat-${cat.categoryKey.toLowerCase()}`}
+                  className="relative group overflow-hidden border border-borderSubtle bg-dark block rounded-[20px] shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 ease-out h-[360px] md:h-[400px] reveal"
+                >
+                  {/* High Quality Image Cover */}
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="w-full h-full object-cover opacity-80 group-hover:opacity-65 scale-100 group-hover:scale-[1.05] transition-all duration-500 ease-out"
+                    loading="lazy"
+                  />
+                  
+                  {/* Gradient Glass Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark/95 via-dark/45 to-transparent transition-all duration-500"></div>
+                  
+                  {/* Showcase Details */}
+                  <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end text-left w-full z-10 transition-all duration-300">
+                    <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-out space-y-2">
+                      <span className="text-[10px] md:text-[11px] uppercase tracking-widest text-primary font-bold block font-sans">
+                        {luxuryLabel}
+                      </span>
+                      <h3 className="font-serif text-3xl md:text-4xl text-white font-bold leading-tight tracking-wide">
+                        {cat.title}
+                      </h3>
+                      <p className="text-gray-300 text-xs font-sans leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-w-md line-clamp-1">
+                        {cat.desc}
+                      </p>
+                    </div>
+
+                    {/* Showroom Explorer Action */}
+                    <div className="opacity-0 group-hover:opacity-100 translate-y-6 group-hover:translate-y-0 transition-all duration-300 ease-out pt-4">
+                      <span className="inline-flex items-center gap-2 text-white font-sans text-xs uppercase tracking-widest font-bold border-b border-primary pb-1 group-hover:text-primary transition-colors">
+                        Explore Collection <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
+
 
       {/* Review Wall */}
       <section className="py-24 bg-[#FAF7F2] border-y border-borderSubtle text-dark">
