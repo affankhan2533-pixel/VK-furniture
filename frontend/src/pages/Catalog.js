@@ -90,14 +90,22 @@ const productsData = [
 
 const categories = ['All', 'Sofas', 'Chairs', 'Tables', 'Beds'];
 
+const getUniqueProducts = (list) => {
+  const seen = {};
+  return list.filter(item => {
+    const key = item.id || item._id || item.name;
+    return seen.hasOwnProperty(key) ? false : (seen[key] = true);
+  });
+};
+
 const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') || 'All';
   
-  const [products, setProducts] = useState(productsData);
+  const [products, setProducts] = useState(getUniqueProducts(productsData));
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(productsData);
+  const [filteredProducts, setFilteredProducts] = useState(getUniqueProducts(productsData));
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -105,8 +113,9 @@ const Catalog = () => {
       try {
         const res = await axios.get(`${BACKEND_URL}/api/products`);
         if (res.data && res.data.length > 0) {
-          setProducts(res.data);
-          setFilteredProducts(res.data);
+          const uniqueList = getUniqueProducts(res.data);
+          setProducts(uniqueList);
+          setFilteredProducts(uniqueList);
         }
       } catch (err) {
         console.error("Failed to load products from API:", err);
@@ -167,15 +176,15 @@ const Catalog = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-left border-b border-borderSubtle pb-8 mb-12">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold leading-none">
+        <div className="text-left border-b border-borderSubtle pb-8 mb-12 max-w-3xl">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-espresso dark:text-light">
             Our Masterpieces
           </h1>
-          <span className="font-devanagari text-lg text-primary mt-1.5 block tracking-wider font-semibold">
+          <span className="font-devanagari text-base md:text-lg text-primary mt-2 block tracking-wider font-semibold">
             कस्टम और थोक फर्नीचर संग्रह
           </span>
-          <p className="text-gray-600 dark:text-gray-300 font-sans text-sm max-w-xl mt-3 leading-relaxed">
-            Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer bulk wholesaling and custom sizing adjustments.
+          <p className="text-[#3A3028] dark:text-[#FAF7F2]/90 font-sans text-[15px] md:text-base max-w-2xl mt-4 leading-relaxed font-medium">
+            Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer B2B wholesale rates and custom sizing adjustments.
           </p>
         </div>
 
@@ -183,17 +192,17 @@ const Catalog = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16">
           
           {/* Category Chips - Swipe Friendly on Mobile */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none snap-x w-full md:w-auto">
-            <Filter size={15} className="text-gray-500 flex-shrink-0 mr-1.5 snap-align-start" />
+          <div className="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-none snap-x w-full md:w-auto">
+            <Filter size={15} className="text-[#3A3028] dark:text-[#FAF7F2] flex-shrink-0 mr-1.5 snap-align-start" />
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
                 data-testid={`category-chip-${cat.toLowerCase()}`}
-                className={`px-6 py-2.5 rounded-full font-sans text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer snap-align-start flex-shrink-0 ${
+                className={`px-6 py-3 rounded-full font-sans text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer snap-align-start flex-shrink-0 border ${
                   selectedCategory === cat
-                    ? 'bg-primary text-white border-primary shadow-md shadow-primary/20'
-                    : 'bg-white dark:bg-[#3A3028] text-gray-500 border border-borderSubtle hover:border-primary hover:text-dark dark:hover:text-white'
+                    ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
+                    : 'bg-white dark:bg-[#3A3028] text-gray-500 border-borderSubtle hover:border-primary hover:text-dark dark:hover:text-white'
                 }`}
               >
                 {cat}
@@ -202,86 +211,97 @@ const Catalog = () => {
           </div>
 
           {/* Search Bar - Premium Rounded */}
-          <div className="relative max-w-md w-full">
+          <div className="relative w-full max-w-md">
             <input
               type="text"
               placeholder="Search design, material or product..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               data-testid="catalog-search-input"
-              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#3A3028] border border-borderSubtle font-sans text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-dark dark:text-light placeholder-gray-400 rounded-full shadow-sm transition-all"
+              className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-[#3A3028] border border-borderSubtle font-sans text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-dark dark:text-light placeholder-gray-400 dark:placeholder-gray-300 rounded-full shadow-md focus:shadow-lg transition-all"
             />
-            <Search className="absolute left-4 top-3.5 text-gray-500" size={15} />
+            <Search className="absolute left-4.5 top-4 text-gray-500" size={16} />
           </div>
         </div>
 
         {/* Product Grid */}
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map(product => (
-              <div
-                key={product.id}
-                data-testid={`product-card-${product.id}`}
-                className="bg-white dark:bg-[#3A3028] border border-borderSubtle flex flex-col group overflow-hidden rounded-[20px] shadow-sm hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-300 reveal"
-              >
-                {/* Image with overlay */}
-                <div className="h-[280px] overflow-hidden relative border-b border-borderSubtle bg-parchment">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover scale-100 group-hover:scale-[1.05] transition-transform duration-500 furniture-card-img"
-                  />
-                  {/* Soft glass gradient overlay over image */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/15 to-transparent"></div>
-                  
-                  <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 text-[9px] uppercase tracking-widest font-bold font-sans rounded-full">
-                    {product.category}
-                  </div>
-                </div>
+            {filteredProducts.map((product, idx) => {
+              const isLast = idx === filteredProducts.length - 1;
+              const isOddCount = filteredProducts.length % 2 !== 0;
+              const isNotThreeMultiple = filteredProducts.length % 3 !== 0;
 
-                {/* Details Section */}
-                <div className="p-8 flex flex-col flex-grow text-left space-y-4">
-                  <div className="space-y-1">
-                    <p className="text-[10px] uppercase tracking-widest text-primary font-bold font-sans">
-                      {product.material}
+              return (
+                <div
+                  key={product.id}
+                  data-testid={`product-card-${product.id}`}
+                  className={`bg-white dark:bg-[#3A3028] border border-borderSubtle flex flex-col group overflow-hidden rounded-[20px] shadow-md hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-300 reveal ${
+                    isLast && isOddCount ? 'md:col-span-2 lg:col-span-1' : ''
+                  } ${
+                    isLast && isNotThreeMultiple ? 'lg:col-span-3 lg:max-w-2xl lg:mx-auto lg:w-full' : ''
+                  }`}
+                >
+                  {/* Image with overlay */}
+                  <div className="h-[300px] overflow-hidden relative rounded-t-[20px] bg-parchment">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover scale-100 group-hover:scale-[1.05] active:scale-[1.05] transition-transform duration-500 furniture-card-img brightness-[1.05]"
+                      loading="lazy"
+                    />
+                    {/* Soft glass gradient overlay over image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/15 to-transparent"></div>
+                    
+                    <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 text-[9px] uppercase tracking-widest font-bold font-sans rounded-full">
+                      {product.category}
+                    </div>
+                  </div>
+
+                  {/* Details Section */}
+                  <div className="p-8 flex flex-col flex-grow text-left space-y-4">
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-[#B08D57] font-bold font-sans">
+                        {product.material}
+                      </p>
+                      <h3 className="font-serif text-2xl font-bold leading-tight text-[#2B2B2B] dark:text-light">
+                        {product.name}
+                      </h3>
+                    </div>
+
+                    <p className="text-[#3A3028]/85 dark:text-gray-300 font-sans text-xs leading-relaxed flex-grow line-clamp-2">
+                      {product.description}
                     </p>
-                    <h3 className="font-serif text-2xl font-bold leading-tight text-espresso dark:text-light">
-                      {product.name}
-                    </h3>
-                  </div>
 
-                  <p className="text-gray-500 dark:text-gray-300 font-sans text-xs leading-relaxed flex-grow line-clamp-2">
-                    {product.description}
-                  </p>
+                    <div className="text-base font-bold text-primary font-serif pt-3 border-t border-borderSubtle flex items-center justify-between">
+                      <span className="font-sans text-[10px] uppercase tracking-widest text-gray-400">Wholesale Price</span>
+                      <span className="text-2xl text-primary font-bold">{product.price}</span>
+                    </div>
 
-                  <div className="text-base font-bold text-primary font-serif pt-3 border-t border-borderSubtle flex items-center justify-between">
-                    <span className="font-sans text-[10px] uppercase tracking-widest text-gray-400">Wholesale Price</span>
-                    <span>{product.price}</span>
-                  </div>
-
-                  {/* Showroom specs & whatsapp actions */}
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <Link
-                      to={`/product/${product.id}`}
-                      data-testid={`view-detail-${product.id}`}
-                      className="border border-[#2B2621] dark:border-light/20 text-[#2B2621] dark:text-light hover:bg-[#2B2621] hover:text-white dark:hover:bg-light dark:hover:text-[#2B2621] py-3 text-center text-[10px] uppercase tracking-widest font-bold font-sans flex items-center justify-center gap-1.5 transition-all duration-300 rounded-[10px] min-h-[44px]"
-                    >
-                      View Specs
-                    </Link>
-                    <a
-                      href={`https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20enquiring%20about%20"${encodeURIComponent(product.name)}".`}
-                      target="_blank"
-                      rel="noreferrer"
-                      data-testid={`enquire-whatsapp-${product.id}`}
-                      className="bg-primary text-white hover:bg-primary-dark py-3 flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-widest font-bold font-sans hover:bg-[#8C6A3F] transition-all duration-300 rounded-[10px] min-h-[44px]"
-                    >
-                      <MessageSquare size={14} className="fill-white stroke-none" />
-                      Enquire
-                    </a>
+                    {/* Showroom specs & whatsapp actions */}
+                    <div className="grid grid-cols-2 gap-3.5 pt-2">
+                      <Link
+                        to={`/product/${product.id}`}
+                        data-testid={`view-detail-${product.id}`}
+                        className="border border-[#2B2621] dark:border-light/20 text-[#2B2621] dark:text-light hover:bg-[#2B2621] hover:text-white dark:hover:bg-light dark:hover:text-[#2B2621] py-3.5 text-center text-[10px] uppercase tracking-widest font-bold font-sans flex items-center justify-center gap-1.5 transition-all duration-300 rounded-[12px] min-h-[48px] active:scale-95"
+                      >
+                        View Specs
+                      </Link>
+                      <a
+                        href={`https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20enquiring%20about%20"${encodeURIComponent(product.name)}".`}
+                        target="_blank"
+                        rel="noreferrer"
+                        data-testid={`enquire-whatsapp-${product.id}`}
+                        className="bg-primary text-white hover:bg-primary-dark py-3.5 flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-widest font-bold font-sans hover:bg-[#8C6A3F] transition-all duration-300 rounded-[12px] min-h-[48px] active:scale-95 shadow-md shadow-primary/20"
+                      >
+                        <MessageSquare size={14} className="fill-white stroke-none" />
+                        Enquire
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-20 bg-white dark:bg-[#3A3028] border border-borderSubtle rounded-[20px]">
