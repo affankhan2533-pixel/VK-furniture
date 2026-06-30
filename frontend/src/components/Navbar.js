@@ -78,9 +78,9 @@ const Navbar = () => {
   return (
     <>
       <nav 
-        className={`sticky top-0 z-40 transition-all duration-500 ${
+        className={`sticky top-0 z-40 transition-all duration-300 ease-in-out ${
           scrolled
-            ? 'bg-light/90 dark:bg-[#2B2621]/90 backdrop-blur-md py-4 border-b border-borderSubtle shadow-md'
+            ? 'bg-[#2B2621]/95 backdrop-blur-md py-4 border-b border-white/10 shadow-md'
             : 'bg-transparent py-6 border-b border-transparent'
         }`}
       >
@@ -90,8 +90,8 @@ const Navbar = () => {
             {/* Brand Logo */}
             <div className="flex-shrink-0">
               <Link to="/" className="flex flex-col text-left group" data-testid="logo-link">
-                <span className={`font-serif text-2xl md:text-3xl font-bold tracking-wide transition-colors duration-300 ${
-                  scrolled ? 'text-espresso dark:text-light' : 'text-white'
+                <span className={`font-serif text-2xl md:text-3xl font-bold tracking-wide transition-colors duration-300 ease-in-out ${
+                  scrolled ? 'text-white' : 'text-espresso dark:text-light'
                 }`}>
                   V.K. Furniture
                 </span>
@@ -108,12 +108,12 @@ const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   data-testid={link.id}
-                  className={`relative font-sans font-semibold text-[11px] uppercase tracking-widest transition-colors duration-300 pb-1.5 ${
+                  className={`relative font-sans font-semibold text-[11px] uppercase tracking-widest transition-colors duration-300 ease-in-out pb-1.5 ${
                     isActive(link.path)
-                      ? 'text-primary'
+                      ? 'text-primary font-bold'
                       : scrolled
-                        ? 'text-espresso/75 dark:text-light/75 hover:text-primary'
-                        : 'text-white/85 hover:text-primary'
+                        ? 'text-white/90 hover:text-primary'
+                        : 'text-espresso/80 dark:text-light/80 hover:text-primary'
                   } before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-primary before:transition-all before:duration-300 ${
                     isActive(link.path) ? 'before:w-full' : 'hover:before:w-full'
                   }`}
@@ -126,8 +126,8 @@ const Navbar = () => {
               <Link
                 to="/cart"
                 data-testid="nav-cart"
-                className={`relative flex items-center p-2 transition-colors duration-300 ${
-                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                className={`relative flex items-center p-2 transition-colors duration-300 ease-in-out ${
+                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
                 }`}
                 title="View Cart"
               >
@@ -142,8 +142,8 @@ const Navbar = () => {
               {/* Light / Dark Mode Toggle */}
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className={`p-2 transition-colors duration-300 cursor-pointer bg-transparent border-none ${
-                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                className={`p-2 transition-colors duration-300 ease-in-out cursor-pointer bg-transparent border-none ${
+                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
                 title="Toggle dark mode"
@@ -155,7 +155,7 @@ const Navbar = () => {
               <Link
                 to="/contact"
                 data-testid="nav-quote-btn"
-                className="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-dark px-4 py-2.5 transition-all duration-300 font-sans text-[10px] uppercase tracking-widest font-bold shine-hover"
+                className="flex items-center gap-1.5 bg-primary text-white hover:bg-primary-dark px-4 py-2.5 transition-all duration-300 ease-in-out font-sans text-[10px] uppercase tracking-widest font-bold shine-hover"
               >
                 Get Quote
                 <ArrowRight size={12} />
@@ -166,8 +166,8 @@ const Navbar = () => {
             <div className="flex items-center gap-2 lg:hidden">
               <Link
                 to="/cart"
-                className={`relative p-2 transition-colors ${
-                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                className={`relative p-2 transition-colors duration-300 ease-in-out ${
+                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
                 }`}
               >
                 <ShoppingBag size={18} />
@@ -180,8 +180,8 @@ const Navbar = () => {
 
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className={`p-2 bg-transparent border-none cursor-pointer ${
-                  scrolled ? 'text-espresso/70 dark:text-light/70 hover:text-primary' : 'text-white/80 hover:text-primary'
+                className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
+                  scrolled ? 'text-white/80 hover:text-primary' : 'text-espresso/80 dark:text-light/80 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
               >
@@ -191,8 +191,8 @@ const Navbar = () => {
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 data-testid="mobile-menu-toggle"
-                className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ${
-                  scrolled ? 'text-espresso dark:text-light hover:text-primary' : 'text-white hover:text-primary'
+                className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
+                  scrolled ? 'text-white hover:text-primary' : 'text-espresso dark:text-light hover:text-primary'
                 }`}
                 aria-label="Toggle Menu"
               >
@@ -202,6 +202,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
 
       {/* Mobile Slide-From-Right Drawer Menu */}
       <div 
