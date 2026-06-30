@@ -16,6 +16,8 @@ module.exports = {
         light: "var(--light)",
         brandGray: "var(--gray)",
         white: "var(--white)",
+        headingHero: "var(--heading-hero)",
+        descHero: "var(--desc-hero)",
         // Compatibility variables
         cream: "var(--light)",
         espresso: "var(--dark)",

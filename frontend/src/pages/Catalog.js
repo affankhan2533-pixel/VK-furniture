@@ -182,13 +182,13 @@ const Catalog = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 items-center border-b border-borderSubtle pb-12 mb-12">
           {/* Left Column: Title & Text */}
           <div className="md:col-span-1 lg:col-span-7 text-left space-y-4">
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-espresso dark:text-light">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-headingHero">
               Our Masterpieces
             </h1>
             <span className="font-devanagari text-base md:text-lg text-primary mt-2 block tracking-wider font-semibold">
               कस्टम और थोक फर्नीचर संग्रह
             </span>
-            <p className="text-[#5B5048] dark:text-[#FAF7F2] font-sans text-[15px] md:text-base leading-relaxed font-medium max-w-2xl">
+            <p className="text-descHero font-sans text-[15px] md:text-base leading-relaxed font-medium max-w-2xl">
               Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer B2B wholesale rates and custom sizing adjustments.
             </p>
           </div>

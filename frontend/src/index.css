@@ -15,6 +15,9 @@
   --bg-theme: var(--light);
   --text-theme: var(--dark);
   --border-theme: rgba(176, 141, 87, 0.15);
+
+  --heading-hero: #2E241C;
+  --desc-hero: #5F5348;
 }
 
 
@@ -22,6 +25,9 @@ html.dark {
   --bg-theme: var(--dark);
   --text-theme: var(--light);
   --border-theme: rgba(176, 141, 87, 0.25);
+
+  --heading-hero: #F7F3EE;
+  --desc-hero: #D2C7BC;
 }
 
 body {
