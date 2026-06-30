@@ -6,16 +6,17 @@
 :root {
   --primary: #B08D57;
   --primary-dark: #8C6A3F;
-  --dark: #111111;
-  --dark-light: #1A1A1A;
+  --dark: #2B2621;
+  --dark-light: #3A3028;
   --light: #F7F3EE;
-  --gray: #8E8E8E;
+  --gray: #A19890;
   --white: #FFFFFF;
 
   --bg-theme: var(--light);
   --text-theme: var(--dark);
   --border-theme: rgba(176, 141, 87, 0.15);
 }
+
 
 html.dark {
   --bg-theme: var(--dark);

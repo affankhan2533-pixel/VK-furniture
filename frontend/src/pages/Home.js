@@ -129,7 +129,7 @@ const Home = () => {
       />
 
       {/* Cinematic Parallax Hero Section */}
-      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#0A0A0A]">
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#2B2621]">
         
         {/* Parallax / Zoom Background */}
         <div className="absolute inset-0 z-0">
@@ -138,7 +138,7 @@ const Home = () => {
             alt="Premium Furniture Setup"
             className="w-full h-full object-cover opacity-50 hero-bg-zoom"
           />
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#3A3028] via-black/35 to-transparent"></div>
         </div>
 
         {/* Dust Overlay Animation */}
@@ -200,21 +200,20 @@ const Home = () => {
         </div>
       </section>
 
-
-
       {/* Stats Strip */}
-      <section className="bg-dark text-white py-10 border-y border-borderSubtle">
+      <section className="bg-[#3A3028] text-white py-10 border-t border-primary/20 border-b border-primary/10 shadow-inner relative z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, i) => (
               <div key={i} className="flex flex-col space-y-1">
                 <span className="font-serif text-3xl md:text-4xl font-bold text-primary">{stat.value}</span>
-                <span className="font-sans text-[10px] uppercase tracking-widest text-gray-400 font-semibold">{stat.label}</span>
+                <span className="font-sans text-[10px] uppercase tracking-widest text-[#FAF7F2]/80 font-bold">{stat.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Bento Grid Featured Collections */}
       <section className="py-24 bg-light text-dark">
