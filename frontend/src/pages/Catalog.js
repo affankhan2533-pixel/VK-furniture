@@ -179,9 +179,9 @@ const Catalog = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center border-b border-borderSubtle pb-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 items-center border-b border-borderSubtle pb-12 mb-12">
           {/* Left Column: Title & Text */}
-          <div className="lg:col-span-7 text-left space-y-4">
+          <div className="md:col-span-1 lg:col-span-7 text-left space-y-4">
             <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-espresso dark:text-light">
               Our Masterpieces
             </h1>
@@ -194,9 +194,9 @@ const Catalog = () => {
           </div>
 
           {/* Right Column: Premium Showcase */}
-          <div className="lg:col-span-5 w-full">
+          <div className="md:col-span-1 lg:col-span-5 w-full flex items-center justify-center md:scale-[0.88] lg:scale-100 transition-all duration-300">
             <React.Suspense fallback={
-              <div className="w-full h-[400px] flex items-center justify-center text-xs uppercase tracking-widest font-sans font-bold text-primary animate-pulse border border-borderSubtle rounded-[24px] bg-white dark:bg-dark-light">
+              <div className="w-full max-w-[420px] h-[360px] flex items-center justify-center text-xs uppercase tracking-widest font-sans font-bold text-primary animate-pulse border border-borderSubtle rounded-[24px] bg-white dark:bg-[#241C17]">
                 Loading Showcase...
               </div>
             }>
@@ -204,6 +204,7 @@ const Catalog = () => {
             </React.Suspense>
           </div>
         </div>
+
 
 
         {/* Filter Controls */}
