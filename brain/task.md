@@ -1,0 +1,19 @@
+- `[x]` Configure backend with FastAPI and MongoDB
+  - `[x]` Create `backend/requirements.txt`
+  - `[x]` Create `backend/.env`
+  - `[x]` Create `backend/server.py` with endpoints for contact enquiries
+  - `[x]` Verify backend starts and connects to MongoDB
+- `[x]` Configure frontend React template
+  - `[x]` Create `frontend/package.json`
+  - `[x]` Create `frontend/tailwind.config.js` and `frontend/postcss.config.js`
+  - `[x]` Create `frontend/craco.config.js`
+  - `[x]` Set up standard styling files (`frontend/src/index.css`, `frontend/src/App.css`)
+- `[x]` Implement frontend components & pages
+  - `[x]` Create Navbar, Footer, and sticky WhatsApp float button
+  - `[x]` Build Home page (Hero, Stats, Collections Bento, review wall)
+  - `[x]` Build Catalog page (Category chips, filter logic, product cards)
+  - `[x]` Build Product Detail page (Spec tables, inquiry trigger buttons)
+  - `[x]` Build Contact page (Contact form + Google Maps embed)
+- `[x]` Install dependencies and verify full stack integration
+  - `[x]` Run `yarn install` or `npm install` on frontend
+  - `[x]` Validate lead capture flow: Submit contact form -> database verification
