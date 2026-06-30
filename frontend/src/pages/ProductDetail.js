@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, Phone, CheckCircle, ShieldCheck, Truck } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, ShieldCheck, Truck, Heart, Share2, Download, Maximize2, FileText, X } from 'lucide-react';
+import axios from 'axios';
 import SEO from '../components/SEO';
+import Furniture3DViewer from '../components/Furniture3DViewer';
 
 const productsData = [
   {
@@ -219,12 +221,28 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState('');
+  const [show3D, setShow3D] = useState(false);
+  const [showZoom, setShowZoom] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [showShareTooltip, setShowShareTooltip] = useState(false);
+  const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const [quoteFormData, setQuoteFormData] = useState({ name: '', phone: '', note: '' });
+  const [quoteSubmitting, setQuoteSubmitting] = useState(false);
+  const [quoteSuccess, setQuoteSuccess] = useState(false);
+  const [quoteError, setQuoteError] = useState('');
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+  const API = `${BACKEND_URL}/api`;
 
   useEffect(() => {
     const foundProduct = productsData.find(p => p.id === id);
     if (foundProduct) {
       setProduct(foundProduct);
       setActiveImage(foundProduct.images[0]);
+      setShow3D(false);
+      
+      const wishlist = JSON.parse(localStorage.getItem('vk_wishlist') || '[]');
+      setIsWishlisted(wishlist.includes(foundProduct.id));
     }
   }, [id]);
 
@@ -239,8 +257,67 @@ const ProductDetail = () => {
     );
   }
 
+  const toggleWishlist = () => {
+    let wishlist = JSON.parse(localStorage.getItem('vk_wishlist') || '[]');
+    if (wishlist.includes(product.id)) {
+      wishlist = wishlist.filter(item => item !== product.id);
+      setIsWishlisted(false);
+    } else {
+      wishlist.push(product.id);
+      setIsWishlisted(true);
+    }
+    localStorage.setItem('vk_wishlist', JSON.stringify(wishlist));
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: `Check out ${product.name} from V.K. Furniture`,
+        url: window.location.href,
+      }).catch(err => console.error(err));
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setShowShareTooltip(true);
+      setTimeout(() => setShowShareTooltip(false), 2500);
+    }
+  };
+
+  const handleQuoteSubmit = async (e) => {
+    e.preventDefault();
+    if (!quoteFormData.name || !quoteFormData.phone) {
+      setQuoteError('Name and Phone numbers are required.');
+      return;
+    }
+    setQuoteSubmitting(true);
+    setQuoteError('');
+    try {
+      const response = await axios.post(`${API}/enquiries`, {
+        name: quoteFormData.name,
+        phone: quoteFormData.phone,
+        email: '',
+        subject: `Quote Request: ${product.name}`,
+        message: `Quote Request for ${product.name}. Special Requests: ${quoteFormData.note || 'None'}`
+      });
+      if (response.status === 201) {
+        setQuoteSuccess(true);
+        setQuoteFormData({ name: '', phone: '', note: '' });
+      }
+    } catch (err) {
+      console.error(err);
+      const serverMsg = err.response?.data?.detail || 'Failed to submit quote request. Please try again.';
+      setQuoteError(serverMsg);
+    } finally {
+      setQuoteSubmitting(false);
+    }
+  };
+
   const queryText = `Hi V.K. Furniture, I am interested in details and pricing for "${product.name}" (ID: ${product.id}). Can you please share the lead times and custom specifications?`;
   const whatsappUrl = `https://wa.me/919821454706?text=${encodeURIComponent(queryText)}`;
+
+  const relatedProducts = productsData
+    .filter(p => p.category === product.category && p.id !== product.id)
+    .slice(0, 3);
 
   const productSchema = {
     "@context": "https://schema.org",
@@ -258,6 +335,12 @@ const ProductDetail = () => {
     }
   };
 
+  const woodType = product.material.toLowerCase().includes("teak") || product.material.toLowerCase().includes("sagwan") 
+    ? "Genuine Seasoned Teak (Sagwan) Wood" 
+    : "Premium Solid Hardwood";
+
+  const dimensions = product.specs["Dimensions"] || product.specs["Dimensions (Large)"] || product.specs["Size"] || "Custom Sized to Order";
+
   return (
     <div className="bg-cream py-12 fade-in">
       <SEO
@@ -268,8 +351,7 @@ const ProductDetail = () => {
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Back Link */}
-        <div className="text-left mb-8">
+        <div className="flex justify-between items-center mb-8">
           <Link
             to="/catalog"
             data-testid="back-to-catalog"
@@ -278,30 +360,93 @@ const ProductDetail = () => {
             <ArrowLeft size={16} />
             Back to Catalog
           </Link>
+
+          <div className="flex items-center gap-3 relative">
+            <button
+              onClick={toggleWishlist}
+              data-testid="wishlist-btn"
+              className={`p-2.5 border transition-all ${
+                isWishlisted 
+                  ? 'bg-red-50 border-red-200 text-red-500' 
+                  : 'bg-white border-borderSubtle text-stone hover:text-espresso'
+              }`}
+              title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />
+            </button>
+
+            <button
+              onClick={handleShare}
+              data-testid="share-btn"
+              className="p-2.5 border bg-white border-borderSubtle text-stone hover:text-espresso transition-all relative"
+              title="Share Product"
+            >
+              <Share2 size={18} />
+              {showShareTooltip && (
+                <span className="absolute bottom-full right-0 mb-2 px-2.5 py-1 bg-espresso text-cream text-[10px] uppercase tracking-widest font-sans whitespace-nowrap shadow-md">
+                  Link Copied!
+                </span>
+              )}
+            </button>
+
+            <a
+              href="/catalogue.pdf"
+              download="VK_Furniture_Catalogue.pdf"
+              data-testid="download-catalogue-btn"
+              className="p-2.5 border bg-white border-borderSubtle text-stone hover:text-espresso transition-all"
+              title="Download Catalogue PDF"
+            >
+              <Download size={18} />
+            </a>
+          </div>
         </div>
 
-        {/* Product Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white border border-borderSubtle p-6 md:p-12">
           
-          {/* Gallery Column */}
           <div className="lg:col-span-6 flex flex-col space-y-4">
-            <div className="h-[400px] md:h-[500px] border border-borderSubtle bg-parchment overflow-hidden">
-              <img
-                src={activeImage}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
+            <div className="h-[400px] md:h-[500px] border border-borderSubtle bg-parchment overflow-hidden relative">
+              {show3D ? (
+                <Furniture3DViewer category={product.category} />
+              ) : (
+                <img
+                  src={activeImage}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              )}
+              
+              <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                <button
+                  onClick={() => setShow3D(!show3D)}
+                  data-testid="toggle-3d-btn"
+                  className="bg-espresso text-cream hover:bg-brass hover:text-white transition-all duration-300 py-2 px-4 text-xs font-sans font-bold tracking-widest uppercase border border-borderSubtle shadow-md cursor-pointer"
+                >
+                  {show3D ? 'View Photos' : 'Interactive 3D'}
+                </button>
+                {!show3D && (
+                  <button
+                    onClick={() => setShowZoom(true)}
+                    data-testid="zoom-btn"
+                    className="p-2 bg-white text-espresso hover:bg-parchment border border-borderSubtle shadow-md transition-colors"
+                    title="Zoom Image"
+                  >
+                    <Maximize2 size={16} />
+                  </button>
+                )}
+              </div>
             </div>
             
-            {/* Thumbnails */}
             <div className="flex gap-4">
               {product.images.map((img, index) => (
                 <button
                   key={index}
-                  onClick={() => setActiveImage(img)}
+                  onClick={() => {
+                    setActiveImage(img);
+                    setShow3D(false);
+                  }}
                   data-testid={`thumb-${index}`}
                   className={`w-24 h-24 border overflow-hidden bg-parchment transition-all ${
-                    activeImage === img ? 'border-teak scale-95 border-2' : 'border-borderSubtle opacity-70 hover:opacity-100'
+                    activeImage === img && !show3D ? 'border-teak scale-95 border-2' : 'border-borderSubtle opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
@@ -310,7 +455,6 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Details Column */}
           <div className="lg:col-span-6 flex flex-col text-left space-y-6">
             <div>
               <span className="text-xs uppercase tracking-widest text-brass font-bold font-sans block mb-1">
@@ -329,7 +473,17 @@ const ProductDetail = () => {
               {product.description}
             </p>
 
-            {/* Specs Table */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-cream pb-6 text-sm">
+              <div className="flex flex-col space-y-1">
+                <span className="text-stone-500 font-sans text-xs uppercase tracking-wider">Wood Type</span>
+                <span className="font-sans font-bold text-espresso">{woodType}</span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-stone-500 font-sans text-xs uppercase tracking-wider">Dimensions</span>
+                <span className="font-sans font-bold text-espresso">{dimensions}</span>
+              </div>
+            </div>
+
             <div>
               <h3 className="font-serif text-xl font-bold text-espresso mb-4">Specifications</h3>
               <div className="border border-borderSubtle overflow-hidden">
@@ -350,7 +504,6 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* B2B Badges */}
             <div className="grid grid-cols-3 gap-4 pt-2">
               <div className="flex flex-col items-center p-3 border border-borderSubtle bg-cream/40 text-center">
                 <ShieldCheck className="text-teak mb-1" size={20} />
@@ -366,7 +519,6 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Call to Actions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
               <a
                 href={whatsappUrl}
@@ -376,20 +528,156 @@ const ProductDetail = () => {
                 className="bg-[#25D366] text-white py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-[#20ba5a] transition-all flex items-center justify-center gap-2"
               >
                 <MessageSquare size={18} className="fill-white stroke-none" />
-                Enquire via WhatsApp
+                WhatsApp Enquiry
               </a>
-              <a
-                href="tel:09821454706"
-                data-testid="call-now-detail"
-                className="bg-teak text-cream py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all flex items-center justify-center gap-2"
+              <button
+                onClick={() => setShowQuoteModal(true)}
+                data-testid="request-quote-detail"
+                className="bg-teak text-cream py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
               >
-                <Phone size={18} />
-                Call 098214 54706
-              </a>
+                <FileText size={18} />
+                Request Custom Quote
+              </button>
             </div>
           </div>
         </div>
+
+        {relatedProducts.length > 0 && (
+          <div className="mt-16 text-left border-t border-borderSubtle pt-12">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-espresso mb-8">Related Collections</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {relatedProducts.map(p => (
+                <div key={p.id} className="bg-white border border-borderSubtle flex flex-col group overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                  <div className="h-[240px] overflow-hidden relative border-b border-borderSubtle bg-parchment">
+                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  </div>
+                  <div className="p-5 flex flex-col flex-grow text-left space-y-2.5">
+                    <h3 className="font-serif text-xl font-bold text-espresso">{p.name}</h3>
+                    <p className="text-xs text-brass font-bold uppercase tracking-wider">{p.material}</p>
+                    <Link to={`/product/${p.id}`} className="mt-4 bg-teak text-cream py-2.5 text-center text-xs uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all">
+                      View Specs
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
+      {showZoom && (
+        <div className="fixed inset-0 bg-espresso/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <button
+            onClick={() => setShowZoom(false)}
+            className="absolute top-6 right-6 text-cream/80 hover:text-white p-2 hover:bg-white/10 transition-colors cursor-pointer"
+            title="Close Zoom"
+          >
+            <X size={28} />
+          </button>
+          <div className="max-w-4xl max-h-[85vh] overflow-hidden border border-borderSubtle shadow-2xl">
+            <img
+              src={activeImage}
+              alt={product.name}
+              className="w-full h-auto max-h-[80vh] object-contain"
+            />
+          </div>
+        </div>
+      )}
+
+      {showQuoteModal && (
+        <div className="fixed inset-0 bg-espresso/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white max-w-md w-full border border-borderSubtle shadow-2xl p-6 md:p-8 relative">
+            <button
+              onClick={() => {
+                setShowQuoteModal(false);
+                setQuoteSuccess(false);
+                setQuoteError('');
+              }}
+              className="absolute top-4 right-4 text-stone hover:text-espresso p-1.5 transition-colors cursor-pointer"
+              title="Close modal"
+            >
+              <X size={20} />
+            </button>
+
+            {quoteSuccess ? (
+              <div className="text-center py-6 space-y-4">
+                <CheckCircle className="text-emerald-500 mx-auto" size={48} />
+                <h3 className="font-serif text-2xl font-bold text-espresso">Quote Request Sent!</h3>
+                <p className="text-sm text-stone font-sans">
+                  Thank you! We have received your specifications. Our craftsman team will contact you back shortly.
+                </p>
+                <button
+                  onClick={() => {
+                    setShowQuoteModal(false);
+                    setQuoteSuccess(false);
+                  }}
+                  className="bg-teak text-cream px-6 py-2.5 text-xs font-sans font-bold tracking-widest uppercase hover:bg-walnut"
+                >
+                  Continue Browsing
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleQuoteSubmit} className="space-y-4 text-left">
+                <h3 className="font-serif text-2xl font-bold text-espresso leading-none mb-1">
+                  Request Custom Quote
+                </h3>
+                <p className="text-stone font-sans text-xs mb-4">
+                  Fill in your custom sizes, fabric type, or requests for **{product.name}**.
+                </p>
+
+                {quoteError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-xs font-sans">
+                    {quoteError}
+                  </div>
+                )}
+
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-stone font-sans">Your Name</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter your name"
+                    value={quoteFormData.name}
+                    onChange={(e) => setQuoteFormData({ ...quoteFormData, name: e.target.value })}
+                    className="w-full px-3 py-2 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-teak text-espresso"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-stone font-sans">Phone Number</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. 098214 54706"
+                    value={quoteFormData.phone}
+                    onChange={(e) => setQuoteFormData({ ...quoteFormData, phone: e.target.value })}
+                    className="w-full px-3 py-2 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-teak text-espresso"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-stone font-sans">Custom Requirements (Optional)</label>
+                  <textarea
+                    rows={3}
+                    placeholder="E.g., custom sizes, wood polish tone preference, cushion foam type..."
+                    value={quoteFormData.note}
+                    onChange={(e) => setQuoteFormData({ ...quoteFormData, note: e.target.value })}
+                    className="w-full px-3 py-2 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-teak text-espresso resize-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={quoteSubmitting}
+                  className="w-full bg-teak text-cream py-3.5 text-xs font-sans font-bold tracking-widest uppercase hover:bg-walnut transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
+                >
+                  {quoteSubmitting ? 'Submitting Quote Request...' : 'Send Quote Request'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
