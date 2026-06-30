@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, CheckCircle, ShieldCheck, Truck, Heart, Share2, Download, Maximize2, FileText, X, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, ShieldCheck, Heart, Share2, Download, Maximize2, FileText, X, ShoppingBag, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
 import SEO from '../components/SEO';
 import Furniture3DViewer from '../components/Furniture3DViewer';
@@ -230,43 +230,15 @@ const ProductDetail = () => {
   const [quoteSubmitting, setQuoteSubmitting] = useState(false);
   const [quoteSuccess, setQuoteSuccess] = useState(false);
   const [quoteError, setQuoteError] = useState('');
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [customSize, setCustomSize] = useState('Standard');
+  const [customFinish, setCustomFinish] = useState('Natural');
+  const [customFabric, setCustomFabric] = useState('Linen');
+  const [customPolish, setCustomPolish] = useState('Matte');
+  const [activeFaq, setActiveFaq] = useState(null);
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
   const API = `${BACKEND_URL}/api`;
 
-  const handleAddToCart = () => {
-    const savedCart = JSON.parse(localStorage.getItem('vk_cart') || '[]');
-    const exists = savedCart.find(item => item.id === product.id);
-    let updatedCart = [...savedCart];
-    
-    const approx_prices = {
-      "handcrafted-teak-sofa": 45000,
-      "l-shape-sectional-sofa": 65000,
-      "modern-sofa-cum-bed": 38000,
-      "handcrafted-teak-dining-set": 48000,
-      "royal-hydraulic-bed": 55000,
-      "vintage-carved-bed": 60000,
-      "upholstered-accent-armchair": 18000
-    };
-    const price = approx_prices[product.id] || 35000;
-
-    if (exists) {
-      updatedCart = savedCart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
-    } else {
-      updatedCart.push({
-        id: product.id,
-        name: product.name,
-        price: price,
-        image: productImages[0],
-        quantity: 1
-      });
-    }
-    
-    localStorage.setItem('vk_cart', JSON.stringify(updatedCart));
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
-  };
 
   useEffect(() => {
     // 1. Fallback from local static products array
@@ -393,8 +365,22 @@ const ProductDetail = () => {
 
   const dimensions = product.specs["Dimensions"] || product.specs["Dimensions (Large)"] || product.specs["Size"] || "Custom Sized to Order";
 
+
+  const faqs = [
+    { q: "How does delivery work?", a: "We provide expert in-house white-glove delivery across the Mumbai region. Delivery is fully handled by our craftsman staff to avoid handling damage." },
+    { q: "What is the warranty policy?", a: "All V.K. Furniture structures are covered under our 5-year solid wood structure warranty. This covers cracking, joint split, or warping." },
+    { q: "Can I customize the sizing?", a: "Yes, since we manufacture everything in our Dharavi facility, you can customize the height, width, and depth to match your specific layout requirements." },
+    { q: "What are the payment options?", a: "We accept digital bank transfers, cards, UPI, and customized billing accounts for hotel developers or commercial B2B dealers." },
+    { q: "How do I maintain Sagwan wood?", a: "Simply wipe down with a soft damp lint-free cloth. Avoid harsh chemical cleaners. Apply natural wood oils once a year to keep the polish fresh." }
+  ];
+
+  const reviewsList = [
+    { name: "Rajesh M.", date: "June 2026", text: "The Sagwan frame quality is exceptional. Heavy wood and precise handcrafting. Highly recommend VK Furniture for bulk hotel projects.", rating: 5 },
+    { name: "Priya S.", date: "May 2026", text: "Customized our L-shape sofa size to fit our corner window. Fabric options are premium, and white glove delivery was seamless.", rating: 5 }
+  ];
+
   return (
-    <div className="bg-cream py-12 fade-in">
+    <div className="bg-light py-16 text-dark fade-in transition-colors duration-300">
       <SEO
         title={`${product.name} Specs & Custom Pricing | V.K. Furniture`}
         description={`Get detailed dimensions, wood finish types, cushion foam densities, and B2B wholesale pricing for ${product.name}. Handcrafted in premium Sagwan teak.`}
@@ -403,24 +389,25 @@ const ProductDetail = () => {
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="flex justify-between items-center mb-8">
+        {/* Back navigation & Share utility bar */}
+        <div className="flex justify-between items-center mb-8 border-b border-borderSubtle pb-4">
           <Link
             to="/catalog"
             data-testid="back-to-catalog"
-            className="inline-flex items-center gap-2 text-stone hover:text-teak transition-colors text-sm uppercase tracking-wider font-bold"
+            className="inline-flex items-center gap-2 text-gray-500 hover:text-primary transition-colors text-xs uppercase tracking-widest font-bold"
           >
             <ArrowLeft size={16} />
             Back to Catalog
           </Link>
 
-          <div className="flex items-center gap-3 relative">
+          <div className="flex items-center gap-3">
             <button
               onClick={toggleWishlist}
               data-testid="wishlist-btn"
-              className={`p-2.5 border transition-all cursor-pointer ${
+              className={`p-2.5 border transition-all rounded-full cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 isWishlisted 
                   ? 'bg-red-50 dark:bg-red-950/20 border-red-200 text-red-500' 
-                  : 'bg-white dark:bg-dark-light border-borderSubtle text-gray hover:text-primary'
+                  : 'bg-white dark:bg-[#3A3028] border-borderSubtle text-gray-500 hover:text-primary'
               }`}
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
@@ -430,7 +417,7 @@ const ProductDetail = () => {
             <button
               onClick={handleShare}
               data-testid="share-btn"
-              className="p-2.5 border bg-white dark:bg-dark-light border-borderSubtle text-gray hover:text-primary transition-all relative cursor-pointer"
+              className="p-2.5 border bg-white dark:bg-[#3A3028] border-borderSubtle text-gray-500 hover:text-primary transition-all rounded-full cursor-pointer relative min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Share Product"
             >
               <Share2 size={18} />
@@ -445,7 +432,7 @@ const ProductDetail = () => {
               href="/catalogue.pdf"
               download="VK_Furniture_Catalogue.pdf"
               data-testid="download-catalogue-btn"
-              className="p-2.5 border bg-white dark:bg-dark-light border-borderSubtle text-gray hover:text-primary transition-all cursor-pointer"
+              className="p-2.5 border bg-white dark:bg-[#3A3028] border-borderSubtle text-gray-500 hover:text-primary transition-all rounded-full cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Download Catalogue PDF"
             >
               <Download size={18} />
@@ -453,25 +440,28 @@ const ProductDetail = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-white dark:bg-dark-light border border-borderSubtle p-6 md:p-12">
+        {/* 2-Column Details Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
-          <div className="lg:col-span-6 flex flex-col space-y-4">
-            <div className="h-[400px] md:h-[500px] border border-borderSubtle bg-parchment overflow-hidden relative">
+          {/* Left Gallery Column */}
+          <div className="lg:col-span-7 flex flex-col space-y-4">
+            <div className="h-[360px] sm:h-[450px] md:h-[520px] rounded-[20px] border border-borderSubtle bg-parchment overflow-hidden relative shadow-sm group">
               {show3D ? (
                 <Furniture3DViewer category={product.category} />
               ) : (
                 <img
                   src={activeImage}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover scale-100 group-hover:scale-[1.05] transition-transform duration-500 ease-out brightness-[1.03]"
                 />
               )}
               
+              {/* Image Controls Overlay */}
               <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                 <button
                   onClick={() => setShow3D(!show3D)}
                   data-testid="toggle-3d-btn"
-                  className="bg-espresso text-cream hover:bg-brass hover:text-white transition-all duration-300 py-2 px-4 text-xs font-sans font-bold tracking-widest uppercase border border-borderSubtle shadow-md cursor-pointer"
+                  className="bg-espresso text-cream hover:bg-primary hover:text-white transition-all duration-300 py-2.5 px-4 text-[10px] font-sans font-bold tracking-widest uppercase border border-white/10 shadow-lg cursor-pointer rounded-full min-h-[44px]"
                 >
                   {show3D ? 'View Photos' : 'Interactive 3D'}
                 </button>
@@ -479,7 +469,7 @@ const ProductDetail = () => {
                   <button
                     onClick={() => setShowZoom(true)}
                     data-testid="zoom-btn"
-                    className="p-2 bg-white text-espresso hover:bg-parchment border border-borderSubtle shadow-md transition-colors"
+                    className="p-2.5 bg-white text-espresso hover:bg-parchment border border-borderSubtle shadow-md transition-colors rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center"
                     title="Zoom Image"
                   >
                     <Maximize2 size={16} />
@@ -488,7 +478,8 @@ const ProductDetail = () => {
               </div>
             </div>
             
-            <div className="flex gap-4">
+            {/* Thumbnails list - Swipe Friendly on Mobile */}
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
               {productImages.map((img, index) => (
                 <button
                   key={index}
@@ -497,8 +488,8 @@ const ProductDetail = () => {
                     setShow3D(false);
                   }}
                   data-testid={`thumb-${index}`}
-                  className={`w-24 h-24 border overflow-hidden bg-parchment transition-all ${
-                    activeImage === img && !show3D ? 'border-teak scale-95 border-2' : 'border-borderSubtle opacity-70 hover:opacity-100'
+                  className={`w-20 h-20 md:w-24 md:h-24 rounded-[12px] border overflow-hidden bg-parchment flex-shrink-0 snap-align-start transition-all cursor-pointer ${
+                    activeImage === img && !show3D ? 'border-primary border-2 scale-95 shadow-md shadow-primary/10' : 'border-borderSubtle opacity-70 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
@@ -507,117 +498,267 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <div className="lg:col-span-6 flex flex-col text-left space-y-6">
+          {/* Right Product Information Column (Sticky for Desktop Viewports) */}
+          <div className="lg:col-span-5 flex flex-col text-left space-y-6 lg:sticky lg:top-24 h-fit">
             <div>
-              <span className="text-xs uppercase tracking-widest text-brass font-bold font-sans block mb-1">
+              <span className="text-[10px] uppercase tracking-widest text-primary font-bold font-sans block mb-1">
                 {product.category}
               </span>
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-espresso leading-none">
+              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-espresso dark:text-light leading-tight">
                 {product.name}
               </h1>
             </div>
 
-            <div className="text-sm font-semibold text-teak font-sans">
-              Pricing: <span className="text-lg font-bold">{product.price}</span>
+            <div className="text-sm font-semibold text-[#5B5048] dark:text-[#FAF7F2] font-sans pb-4 border-b border-borderSubtle">
+              Pricing: <span className="text-2xl font-bold text-primary font-serif ml-1.5">{product.price}</span>
             </div>
 
-            <p className="text-stone font-sans text-base leading-relaxed border-b border-cream pb-6">
+            <p className="text-[#5B5048] dark:text-gray-300 font-sans text-sm leading-relaxed">
               {product.description}
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-cream pb-6 text-sm">
-              <div className="flex flex-col space-y-1">
-                <span className="text-stone-500 font-sans text-xs uppercase tracking-wider">Wood Type</span>
-                <span className="font-sans font-bold text-espresso">{woodType}</span>
+            {/* Customization Options Section */}
+            <div className="space-y-4 py-6 border-y border-borderSubtle">
+              <h3 className="font-serif text-lg font-bold text-espresso dark:text-light">Showroom Options</h3>
+              
+              <div className="space-y-2.5">
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block">Size Configurations</span>
+                <div className="flex gap-2 flex-wrap">
+                  {['Standard', 'Compact', 'Grand'].map(sz => (
+                    <button
+                      key={sz}
+                      onClick={() => setCustomSize(sz)}
+                      className={`px-4 py-2 text-xs font-sans font-semibold rounded-full border transition-all cursor-pointer ${
+                        customSize === sz ? 'bg-primary text-white border-primary' : 'bg-transparent text-gray-500 border-borderSubtle'
+                      }`}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col space-y-1">
-                <span className="text-stone-500 font-sans text-xs uppercase tracking-wider">Dimensions</span>
-                <span className="font-sans font-bold text-espresso">{dimensions}</span>
+
+              <div className="space-y-2.5">
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block">Wood Finish Tone</span>
+                <div className="flex gap-2 flex-wrap">
+                  {['Natural', 'Honey', 'Walnut', 'Charcoal'].map(fn => (
+                    <button
+                      key={fn}
+                      onClick={() => setCustomFinish(fn)}
+                      className={`px-4 py-2 text-xs font-sans font-semibold rounded-full border transition-all cursor-pointer ${
+                        customFinish === fn ? 'bg-primary text-white border-primary' : 'bg-transparent text-gray-500 border-borderSubtle'
+                      }`}
+                    >
+                      {fn}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2.5">
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block">Upholstery Fabric</span>
+                <div className="flex gap-2 flex-wrap">
+                  {['Linen', 'Velvet', 'Cotton'].map(fb => (
+                    <button
+                      key={fb}
+                      onClick={() => setCustomFabric(fb)}
+                      className={`px-4 py-2 text-xs font-sans font-semibold rounded-full border transition-all cursor-pointer ${
+                        customFabric === fb ? 'bg-primary text-white border-primary' : 'bg-transparent text-gray-500 border-borderSubtle'
+                      }`}
+                    >
+                      {fb}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2.5">
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold block">Polish Gloss Level</span>
+                <div className="flex gap-2 flex-wrap">
+                  {['Matte', 'Glossy', 'Satin'].map(pl => (
+                    <button
+                      key={pl}
+                      onClick={() => setCustomPolish(pl)}
+                      className={`px-4 py-2 text-xs font-sans font-semibold rounded-full border transition-all cursor-pointer ${
+                        customPolish === pl ? 'bg-primary text-white border-primary' : 'bg-transparent text-gray-500 border-borderSubtle'
+                      }`}
+                    >
+                      {pl}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div>
-              <h3 className="font-serif text-xl font-bold text-espresso mb-4">Specifications</h3>
-              <div className="border border-borderSubtle overflow-hidden">
-                <table className="min-w-full divide-y divide-borderSubtle font-sans text-sm">
-                  <tbody className="divide-y divide-borderSubtle bg-white">
-                    <tr className="bg-parchment/30">
-                      <td className="px-4 py-3 font-semibold text-espresso w-1/3">Material</td>
-                      <td className="px-4 py-3 text-stone">{product.material}</td>
-                    </tr>
-                    {Object.entries(product.specs).map(([key, val]) => (
-                      <tr key={key}>
-                        <td className="px-4 py-3 font-semibold text-espresso">{key}</td>
-                        <td className="px-4 py-3 text-stone">{val}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 pt-2">
-              <div className="flex flex-col items-center p-3 border border-borderSubtle bg-cream/40 text-center">
-                <ShieldCheck className="text-teak mb-1" size={20} />
-                <span className="text-[10px] uppercase font-bold text-espresso tracking-wider">Quality Checked</span>
-              </div>
-              <div className="flex flex-col items-center p-3 border border-borderSubtle bg-cream/40 text-center">
-                <CheckCircle className="text-teak mb-1" size={20} />
-                <span className="text-[10px] uppercase font-bold text-espresso tracking-wider">Custom Sizing</span>
-              </div>
-              <div className="flex flex-col items-center p-3 border border-borderSubtle bg-cream/40 text-center">
-                <Truck className="text-teak mb-1" size={20} />
-                <span className="text-[10px] uppercase font-bold text-espresso tracking-wider">Mumbai Delivery</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+            {/* CTA Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <button
+                onClick={() => setShowQuoteModal(true)}
+                data-testid="request-quote-detail"
+                className="w-full bg-[#B08D57] hover:bg-[#8C6A3F] text-white py-4 text-center text-xs uppercase tracking-widest font-bold font-sans transition-all flex items-center justify-center gap-2 cursor-pointer border-none rounded-[12px] min-h-[48px] shadow-lg shadow-primary/10 active:scale-95"
+              >
+                <FileText size={16} />
+                Request Quote
+              </button>
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
                 data-testid="enquire-whatsapp-detail"
-                className="bg-[#25D366] text-white py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-[#20ba5a] transition-all flex items-center justify-center gap-2"
+                className="bg-espresso text-white hover:bg-espresso/90 border border-borderSubtle dark:bg-light dark:text-espresso py-4 text-center text-xs uppercase tracking-widest font-bold font-sans transition-all flex items-center justify-center gap-2 rounded-[12px] min-h-[48px] active:scale-95"
               >
-                <MessageSquare size={18} className="fill-white stroke-none" />
-                WhatsApp Enquiry
+                <MessageSquare size={16} className="fill-current stroke-none" />
+                Chat on WhatsApp
               </a>
-              <button
-                onClick={handleAddToCart}
-                data-testid="add-to-cart-detail"
-                className="bg-espresso text-cream py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-teak transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
-              >
-                <ShoppingBag size={18} />
-                {addedToCart ? 'Added to Cart!' : 'Add to Shopping Cart'}
-              </button>
             </div>
 
-            <div className="pt-2">
-              <button
-                onClick={() => setShowQuoteModal(true)}
-                data-testid="request-quote-detail"
-                className="w-full bg-teak text-cream py-3 text-center text-xs uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
-              >
-                <FileText size={16} />
-                Request Custom Quote
-              </button>
+            {/* General Specs Summary Grid */}
+            <div className="grid grid-cols-2 gap-y-4 gap-x-6 pt-4 text-xs font-sans border-t border-borderSubtle">
+              <div className="flex flex-col space-y-1">
+                <span className="text-gray-400 uppercase tracking-widest text-[9px] font-bold">Wood Material</span>
+                <span className="font-bold text-espresso dark:text-light">{woodType}</span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-gray-400 uppercase tracking-widest text-[9px] font-bold">Dimensions</span>
+                <span className="font-bold text-espresso dark:text-light">{dimensions}</span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-gray-400 uppercase tracking-widest text-[9px] font-bold">Availability</span>
+                <span className="font-bold text-emerald-500">In Stock (Made-to-order)</span>
+              </div>
+              <div className="flex flex-col space-y-1">
+                <span className="text-gray-400 uppercase tracking-widest text-[9px] font-bold">Estimated Delivery</span>
+                <span className="font-bold text-espresso dark:text-light">10-14 Days (Mumbai Region)</span>
+              </div>
             </div>
+
           </div>
         </div>
 
+        {/* Feature Highlights Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 py-8 border-y border-borderSubtle my-16 bg-[#2B2621]/5 dark:bg-[#2B2621]/30">
+          <div className="flex flex-col items-center text-center p-3">
+            <ShieldCheck className="text-primary mb-2" size={24} />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-espresso dark:text-light">100% Sagwan Wood</span>
+          </div>
+          <div className="flex flex-col items-center text-center p-3">
+            <CheckCircle className="text-primary mb-2" size={24} />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-espresso dark:text-light">Handcrafted Stamp</span>
+          </div>
+          <div className="flex flex-col items-center text-center p-3">
+            <Maximize2 className="text-primary mb-2" size={24} />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-espresso dark:text-light">Custom Sizing</span>
+          </div>
+          <div className="flex flex-col items-center text-center p-3">
+            <ShoppingBag className="text-primary mb-2" size={24} />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-espresso dark:text-light">Factory Direct Price</span>
+          </div>
+          <div className="flex flex-col items-center text-center p-3">
+            <ShieldCheck className="text-primary mb-2" size={24} />
+            <span className="text-[10px] uppercase font-bold tracking-wider text-espresso dark:text-light">Lifetime Durability</span>
+          </div>
+        </div>
+
+        {/* Dynamic Detail Sections: Specs Table, Reviews, Accordion */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16 text-left items-start">
+          
+          {/* Specifications Table */}
+          <div className="lg:col-span-7 space-y-6">
+            <h3 className="font-serif text-2xl font-bold text-espresso dark:text-light">Technical Specifications</h3>
+            <div className="border border-borderSubtle overflow-hidden rounded-[14px] bg-white dark:bg-[#3A3028]">
+              <table className="min-w-full divide-y divide-borderSubtle font-sans text-sm">
+                <tbody className="divide-y divide-borderSubtle bg-transparent">
+                  <tr className="bg-parchment/30">
+                    <td className="px-4 py-3.5 font-bold text-espresso dark:text-light w-1/3">Material Base</td>
+                    <td className="px-4 py-3.5 text-[#5B5048] dark:text-gray-300">{product.material}</td>
+                  </tr>
+                  {Object.entries(product.specs).map(([key, val]) => (
+                    <tr key={key}>
+                      <td className="px-4 py-3.5 font-bold text-espresso dark:text-light">{key}</td>
+                      <td className="px-4 py-3.5 text-[#5B5048] dark:text-gray-300">{val}</td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td className="px-4 py-3.5 font-bold text-espresso dark:text-light">Assembly Required</td>
+                    <td className="px-4 py-3.5 text-[#5B5048] dark:text-gray-300">Free In-home assembly provided</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3.5 font-bold text-espresso dark:text-light">Care Instructions</td>
+                    <td className="px-4 py-3.5 text-[#5B5048] dark:text-gray-300">Wipe clean with a damp lint-free cloth.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Customer Reviews block */}
+            <div className="space-y-6 pt-6">
+              <div className="flex justify-between items-center">
+                <h3 className="font-serif text-2xl font-bold text-espresso dark:text-light">Verified Reviews</h3>
+                <span className="text-[10px] uppercase font-bold tracking-widest text-[#B08D57] bg-primary/10 py-1 px-3.5 rounded-full">Google Verified 4.9 ★</span>
+              </div>
+
+              <div className="space-y-4">
+                {reviewsList.map((rev, idx) => (
+                  <div key={idx} className="bg-white dark:bg-[#3A3028] border border-borderSubtle p-6 rounded-[16px] shadow-sm flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex text-primary gap-1">
+                        {[...Array(rev.rating)].map((_, i) => (
+                          <Star key={i} size={14} fill="currentColor" />
+                        ))}
+                      </div>
+                      <p className="font-sans text-sm leading-relaxed text-[#5B5048] dark:text-gray-300 italic">"{rev.text}"</p>
+                    </div>
+                    <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray-500 font-bold border-t border-borderSubtle pt-3 mt-4">
+                      <span>{rev.name}</span>
+                      <span className="text-primary">{rev.date}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Elegant FAQ Accordion Column */}
+          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+            <h3 className="font-serif text-2xl font-bold text-espresso dark:text-light">Showroom FAQs</h3>
+            
+            <div className="divide-y divide-borderSubtle border-y border-borderSubtle bg-white dark:bg-[#3A3028] rounded-[16px] p-2">
+              {faqs.map((faq, idx) => {
+                const isOpen = activeFaq === idx;
+                return (
+                  <div key={idx} className="py-3">
+                    <button
+                      onClick={() => setActiveFaq(isOpen ? null : idx)}
+                      className="w-full flex justify-between items-center text-left py-2.5 font-sans font-bold text-sm text-espresso dark:text-light hover:text-primary transition-all bg-transparent border-none cursor-pointer"
+                    >
+                      <span>{faq.q}</span>
+                      {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </button>
+                    <div className={`overflow-hidden transition-all duration-300 max-h-0 ${isOpen ? 'max-h-[140px] mt-2' : ''}`}>
+                      <p className="text-xs font-sans leading-relaxed text-[#5B5048] dark:text-gray-300 pb-2">{faq.a}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Related Collections Horizontal Carousel */}
         {relatedProducts.length > 0 && (
           <div className="mt-16 text-left border-t border-borderSubtle pt-12">
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-espresso mb-8">Related Collections</h2>
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-espresso dark:text-light mb-8">Related Collections</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {relatedProducts.map(p => (
-                <div key={p.id} className="bg-white border border-borderSubtle flex flex-col group overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
+                <div key={p.id} className="bg-white dark:bg-[#3A3028] border border-borderSubtle flex flex-col group overflow-hidden rounded-[20px] shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300">
                   <div className="h-[240px] overflow-hidden relative border-b border-borderSubtle bg-parchment">
-                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover scale-100 group-hover:scale-[1.05] transition-transform duration-500 ease-out" />
                   </div>
-                  <div className="p-5 flex flex-col flex-grow text-left space-y-2.5">
-                    <h3 className="font-serif text-xl font-bold text-espresso">{p.name}</h3>
-                    <p className="text-xs text-brass font-bold uppercase tracking-wider">{p.material}</p>
-                    <Link to={`/product/${p.id}`} className="mt-4 bg-teak text-cream py-2.5 text-center text-xs uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all">
+                  <div className="p-6 flex flex-col flex-grow text-left space-y-2.5">
+                    <h3 className="font-serif text-xl font-bold text-espresso dark:text-light">{p.name}</h3>
+                    <p className="text-xs text-primary font-bold uppercase tracking-wider">{p.material}</p>
+                    <Link to={`/product/${p.id}`} className="mt-4 bg-primary text-cream py-3 text-center text-xs uppercase tracking-widest font-bold font-sans hover:bg-[#8C6A3F] transition-all rounded-[10px] min-h-[44px] flex items-center justify-center shadow-md shadow-primary/10">
                       View Specs
                     </Link>
                   </div>
@@ -628,35 +769,37 @@ const ProductDetail = () => {
         )}
       </div>
 
+      {/* Click-to-Enlarge Fullscreen Image Viewer Modal */}
       {showZoom && (
         <div className="fixed inset-0 bg-espresso/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <button
             onClick={() => setShowZoom(false)}
-            className="absolute top-6 right-6 text-cream/80 hover:text-white p-2 hover:bg-white/10 transition-colors cursor-pointer"
+            className="absolute top-6 right-6 text-cream/80 hover:text-white p-2 hover:bg-white/10 transition-colors cursor-pointer rounded-full"
             title="Close Zoom"
           >
             <X size={28} />
           </button>
-          <div className="max-w-4xl max-h-[85vh] overflow-hidden border border-borderSubtle shadow-2xl">
+          <div className="max-w-4xl max-h-[85vh] overflow-hidden border border-borderSubtle shadow-2xl rounded-[14px]">
             <img
               src={activeImage}
               alt={product.name}
-              className="w-full h-auto max-h-[80vh] object-contain"
+              className="w-full h-auto max-h-[80vh] object-contain transition-all duration-300 active:scale-125"
             />
           </div>
         </div>
       )}
 
+      {/* Request Custom Quote Modal Form */}
       {showQuoteModal && (
-        <div className="fixed inset-0 bg-espresso/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white max-w-md w-full border border-borderSubtle shadow-2xl p-6 md:p-8 relative">
+        <div className="fixed inset-0 bg-[#2B2621]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#3A3028] max-w-md w-full border border-borderSubtle shadow-2xl p-6 md:p-8 relative rounded-[20px] text-[#2B2B2B] dark:text-[#F7F3EC]">
             <button
               onClick={() => {
                 setShowQuoteModal(false);
                 setQuoteSuccess(false);
                 setQuoteError('');
               }}
-              className="absolute top-4 right-4 text-stone hover:text-espresso p-1.5 transition-colors cursor-pointer"
+              className="absolute top-4 right-4 text-gray hover:text-espresso dark:hover:text-light p-1.5 transition-colors cursor-pointer"
               title="Close modal"
             >
               <X size={20} />
@@ -665,7 +808,7 @@ const ProductDetail = () => {
             {quoteSuccess ? (
               <div className="text-center py-6 space-y-4">
                 <CheckCircle className="text-emerald-500 mx-auto" size={48} />
-                <h3 className="font-serif text-2xl font-bold text-espresso">Quote Request Sent!</h3>
+                <h3 className="font-serif text-2xl font-bold text-espresso dark:text-light">Quote Request Sent!</h3>
                 <p className="text-sm text-stone font-sans">
                   Thank you! We have received your specifications. Our craftsman team will contact you back shortly.
                 </p>
@@ -674,17 +817,17 @@ const ProductDetail = () => {
                     setShowQuoteModal(false);
                     setQuoteSuccess(false);
                   }}
-                  className="bg-teak text-cream px-6 py-2.5 text-xs font-sans font-bold tracking-widest uppercase hover:bg-walnut"
+                  className="bg-primary text-white px-6 py-3.5 text-xs font-sans font-bold tracking-widest uppercase hover:bg-primary-dark rounded-full min-h-[44px]"
                 >
                   Continue Browsing
                 </button>
               </div>
             ) : (
               <form onSubmit={handleQuoteSubmit} className="space-y-4 text-left">
-                <h3 className="font-serif text-2xl font-bold text-espresso leading-none mb-1">
+                <h3 className="font-serif text-2xl font-bold text-espresso dark:text-light leading-none mb-1">
                   Request Custom Quote
                 </h3>
-                <p className="text-stone font-sans text-xs mb-4">
+                <p className="text-gray-500 dark:text-gray-300 font-sans text-xs mb-4">
                   Fill in your custom sizes, fabric type, or requests for **{product.name}**.
                 </p>
 
@@ -695,44 +838,44 @@ const ProductDetail = () => {
                 )}
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold tracking-widest text-stone font-sans">Your Name</label>
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-[#B08D57] font-sans">Your Name</label>
                   <input
                     type="text"
                     required
                     placeholder="Enter your name"
                     value={quoteFormData.name}
                     onChange={(e) => setQuoteFormData({ ...quoteFormData, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-teak text-espresso"
+                    className="w-full px-4 py-3 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-primary text-[#2B2B2B] dark:text-[#F7F3EC] rounded-[10px]"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold tracking-widest text-stone font-sans">Phone Number</label>
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-[#B08D57] font-sans">Phone Number</label>
                   <input
                     type="tel"
                     required
                     placeholder="e.g. 098214 54706"
                     value={quoteFormData.phone}
                     onChange={(e) => setQuoteFormData({ ...quoteFormData, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-teak text-espresso"
+                    className="w-full px-4 py-3 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-primary text-[#2B2B2B] dark:text-[#F7F3EC] rounded-[10px]"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-bold tracking-widest text-stone font-sans">Custom Requirements (Optional)</label>
+                  <label className="text-[10px] uppercase font-bold tracking-widest text-[#B08D57] font-sans">Custom Requirements (Optional)</label>
                   <textarea
                     rows={3}
-                    placeholder="E.g., custom sizes, wood polish tone preference, cushion foam type..."
+                    placeholder="E.g., custom sizes, wood polish tone preference, cushion fabric choice..."
                     value={quoteFormData.note}
                     onChange={(e) => setQuoteFormData({ ...quoteFormData, note: e.target.value })}
-                    className="w-full px-3 py-2 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-teak text-espresso resize-none"
+                    className="w-full px-4 py-3 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-primary text-[#2B2B2B] dark:text-[#F7F3EC] resize-none rounded-[10px]"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={quoteSubmitting}
-                  className="w-full bg-teak text-cream py-3.5 text-xs font-sans font-bold tracking-widest uppercase hover:bg-walnut transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
+                  className="w-full bg-[#B08D57] hover:bg-[#8C6A3F] text-white py-3.5 text-xs font-sans font-bold tracking-widest uppercase transition-all flex items-center justify-center gap-2 cursor-pointer border-none rounded-[12px] min-h-[48px]"
                 >
                   {quoteSubmitting ? 'Submitting Quote Request...' : 'Send Quote Request'}
                 </button>
