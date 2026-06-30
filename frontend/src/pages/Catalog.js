@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Search, Filter, MessageSquare } from 'lucide-react';
+import axios from 'axios';
 import SEO from '../components/SEO';
 
 const productsData = [
@@ -111,16 +112,33 @@ const Catalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') || 'All';
   
+  const [products, setProducts] = useState(productsData);
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(productsData);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/products`);
+        if (res.data && res.data.length > 0) {
+          setProducts(res.data);
+          setFilteredProducts(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to load products from API:", err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     setSelectedCategory(categoryParam);
   }, [categoryParam]);
 
   useEffect(() => {
-    let result = productsData;
+    let result = products;
     
     // Category Filter
     if (selectedCategory !== 'All') {
@@ -137,7 +155,7 @@ const Catalog = () => {
     }
     
     setFilteredProducts(result);
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, products]);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);

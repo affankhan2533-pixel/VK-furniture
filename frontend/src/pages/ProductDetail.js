@@ -235,16 +235,32 @@ const ProductDetail = () => {
   const API = `${BACKEND_URL}/api`;
 
   useEffect(() => {
+    // 1. Fallback from local static products array
     const foundProduct = productsData.find(p => p.id === id);
     if (foundProduct) {
       setProduct(foundProduct);
       setActiveImage(foundProduct.images[0]);
-      setShow3D(false);
-      
-      const wishlist = JSON.parse(localStorage.getItem('vk_wishlist') || '[]');
-      setIsWishlisted(wishlist.includes(foundProduct.id));
     }
-  }, [id]);
+    setShow3D(false);
+    
+    const wishlist = JSON.parse(localStorage.getItem('vk_wishlist') || '[]');
+    setIsWishlisted(wishlist.includes(id));
+
+    // 2. Fetch from database API
+    const fetchProductFromApi = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/api/products/${id}`);
+        if (response.data) {
+          setProduct(response.data);
+          const imgs = response.data.images || [response.data.image];
+          setActiveImage(imgs[0]);
+        }
+      } catch (err) {
+        console.error("Failed to load product details from server:", err);
+      }
+    };
+    fetchProductFromApi();
+  }, [id, BACKEND_URL]);
 
   if (!product) {
     return (
@@ -256,6 +272,8 @@ const ProductDetail = () => {
       </div>
     );
   }
+
+  const productImages = product.images || [product.image || '/images/workshop.png'];
 
   const toggleWishlist = () => {
     let wishlist = JSON.parse(localStorage.getItem('vk_wishlist') || '[]');
@@ -323,7 +341,7 @@ const ProductDetail = () => {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.name,
-    "image": product.images.map(img => img.startsWith('http') ? img : `https://vk-furniture.vercel.app${img}`),
+    "image": productImages.map(img => img.startsWith('http') ? img : `https://vk-furniture.vercel.app${img}`),
     "description": product.description,
     "material": product.material,
     "category": product.category,
@@ -346,7 +364,7 @@ const ProductDetail = () => {
       <SEO
         title={`${product.name} Specs & Custom Pricing | V.K. Furniture`}
         description={`Get detailed dimensions, wood finish types, cushion foam densities, and B2B wholesale pricing for ${product.name}. Handcrafted in premium Sagwan teak.`}
-        ogImage={product.images[0]}
+        ogImage={productImages[0]}
         schema={productSchema}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -437,7 +455,7 @@ const ProductDetail = () => {
             </div>
             
             <div className="flex gap-4">
-              {product.images.map((img, index) => (
+              {productImages.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => {

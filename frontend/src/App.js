@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
+import axios from 'axios';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
+import AIChatbot from './components/AIChatbot';
 import Preloader from './components/Preloader';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import CustomCursor from './components/CustomCursor';
@@ -16,8 +18,32 @@ import Contact from './pages/Contact';
 import About from './pages/About';
 import Gallery from './pages/Gallery';
 import CustomPlanner from './pages/CustomPlanner';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import Services from './pages/Services';
 
 import './App.css';
+
+// Automated page hit tracker mapping visits in MongoDB
+const AnalyticsTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const trackPageHit = async () => {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+      try {
+        if (!location.pathname.startsWith('/admin')) {
+          await axios.post(`${BACKEND_URL}/api/analytics/track`, { path: location.pathname });
+        }
+      } catch (err) {
+        console.error("Traffic logger failed:", err);
+      }
+    };
+    trackPageHit();
+  }, [location]);
+
+  return null;
+};
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -70,10 +96,8 @@ function App() {
       elements.forEach(el => observer.observe(el));
     };
 
-    // Run setup immediately and on location changes
     setupObserver();
 
-    // Watch for dynamic DOM changes (e.g. page routing or list filters)
     const mutationObserver = new MutationObserver(setupObserver);
     mutationObserver.observe(document.body, { childList: true, subtree: true });
 
@@ -89,6 +113,7 @@ function App() {
         <Preloader onComplete={() => setLoading(false)} />
       ) : (
         <div className="flex flex-col min-h-screen bg-cream selection:bg-brass selection:text-white transition-opacity duration-700 ease-in-out">
+          <AnalyticsTracker />
           <ScrollProgressBar />
           <CustomCursor />
           <Navbar />
@@ -102,11 +127,15 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/custom-planner" element={<CustomPlanner />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
           </main>
           
           <Footer />
           <WhatsAppButton />
+          <AIChatbot />
         </div>
       )}
     </BrowserRouter>

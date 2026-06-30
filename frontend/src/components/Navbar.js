@@ -11,6 +11,7 @@ const Navbar = () => {
     { name: 'Collections', path: '/catalog', id: 'nav-catalog' },
     { name: 'Custom Design', path: '/custom-planner', id: 'nav-custom' },
     { name: 'Gallery', path: '/gallery', id: 'nav-gallery' },
+    { name: 'Services', path: '/services', id: 'nav-services' },
     { name: 'About Us', path: '/about', id: 'nav-about' },
     { name: 'Contact', path: '/contact', id: 'nav-contact' },
   ];

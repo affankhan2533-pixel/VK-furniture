@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageSquare, ZoomIn } from 'lucide-react';
+import axios from 'axios';
 import SEO from '../components/SEO';
 
 const galleryItems = [
@@ -107,10 +108,26 @@ const categories = ['All', 'Dining', 'Sofas', 'Chairs', 'Beds', 'Workshop'];
 const Gallery = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [lightboxImg, setLightboxImg] = useState(null);
+  const [items, setItems] = useState(galleryItems);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+      try {
+        const res = await axios.get(`${BACKEND_URL}/api/gallery`);
+        if (res.data && res.data.length > 0) {
+          setItems(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery items:", err);
+      }
+    };
+    fetchGallery();
+  }, []);
 
   const filtered = activeFilter === 'All'
-    ? galleryItems
-    : galleryItems.filter(g => g.category === activeFilter);
+    ? items
+    : items.filter(g => g.category === activeFilter);
 
   return (
     <div className="bg-cream py-12 fade-in">
