@@ -10,6 +10,12 @@ body {
   overflow-x: hidden;
 }
 
+/* Base custom selection style */
+::selection {
+  background-color: #C59D5F; /* brass */
+  color: #FFFFFF;
+}
+
 /* Page transitions / animations */
 .fade-in {
   animation: fadeIn 0.8s ease-out forwards;
@@ -24,4 +30,84 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ── Luxury Scroll Reveal & Parallax ─────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* Clip-Path/Overflow Text Reveal */
+.text-reveal-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.text-reveal {
+  transform: translateY(100%);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.active .text-reveal {
+  transform: translateY(0);
+}
+
+/* Image Reveal scale container */
+.image-reveal {
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(44, 36, 27, 0.08);
+}
+
+.image-reveal img {
+  transform: scale(1.12);
+  transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.image-reveal.active img {
+  transform: scale(1);
+}
+
+/* ── Premium Micro Interactions & Hover Animations ────────────────────── */
+
+/* Glassmorphism card hover glow */
+.glass-hover-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(44, 36, 27, 0.05);
+}
+
+.glass-hover-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -10px rgba(74, 53, 37, 0.12);
+  border-color: rgba(197, 157, 95, 0.3); /* brass border on hover */
+  background-color: #ffffff;
+}
+
+/* Furniture image zoom card trigger */
+.furniture-card-img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-hover-card:hover .furniture-card-img {
+  transform: scale(1.05);
+}
+
+/* Magnetic button micro pulls */
+.magnetic-btn {
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }

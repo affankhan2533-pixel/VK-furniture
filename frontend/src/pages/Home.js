@@ -111,7 +111,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Hero Left Content */}
-          <div className="lg:col-span-7 flex flex-col space-y-6 text-left">
+          <div className="lg:col-span-7 flex flex-col space-y-6 text-left reveal">
             <div className="flex items-center gap-2 bg-parchment py-1.5 px-3 border border-borderSubtle w-fit">
               <Star size={16} fill="#C59D5F" className="text-brass" />
               <span className="text-sm font-semibold text-espresso">5.0 Star Rated Wholesale Manufacturer</span>
@@ -154,8 +154,8 @@ const Home = () => {
           </div>
 
           {/* Hero Right Images / Bento-like offset wrapper */}
-          <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex justify-center">
-            <div className="relative w-full max-w-md h-[450px] bg-parchment border border-borderSubtle p-4 shadow-xl">
+          <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex justify-center reveal reveal-delay-2">
+            <div className="relative w-full max-w-md h-[450px] bg-parchment border border-borderSubtle p-4 shadow-xl image-reveal active">
               <img
                 src="/images/king-bed.png"
                 alt="Sagwan Showroom"
@@ -203,7 +203,7 @@ const Home = () => {
                 key={i}
                 to={`/catalog?category=${cat.categoryKey}`}
                 data-testid={`featured-cat-${cat.categoryKey.toLowerCase()}`}
-                className={`${cat.cols} relative group overflow-hidden border border-borderSubtle h-[320px] bg-espresso`}
+                className={`${cat.cols} relative group overflow-hidden border border-borderSubtle h-[320px] bg-espresso reveal reveal-delay-${i % 4}`}
               >
                 <img
                   src={cat.image}
@@ -246,7 +246,7 @@ const Home = () => {
               <div
                 key={i}
                 data-testid={`review-card-${i}`}
-                className="bg-white p-8 border-l-4 border-brass shadow-sm flex flex-col justify-between"
+                className={`bg-white p-8 border-l-4 border-brass shadow-sm flex flex-col justify-between reveal reveal-delay-${i % 3} glass-hover-card`}
               >
                 <div className="flex text-brass mb-4">
                   {[...Array(5)].map((_, idx) => (

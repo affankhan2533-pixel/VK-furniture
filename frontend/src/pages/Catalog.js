@@ -222,14 +222,14 @@ const Catalog = () => {
               <div
                 key={product.id}
                 data-testid={`product-card-${product.id}`}
-                className="bg-white border border-borderSubtle flex flex-col group overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+                className="bg-white border border-borderSubtle flex flex-col group overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 reveal glass-hover-card"
               >
                 {/* Image */}
-                <div className="h-[280px] overflow-hidden relative border-b border-borderSubtle bg-parchment">
+                <div className="h-[280px] overflow-hidden relative border-b border-borderSubtle bg-parchment image-reveal active">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 furniture-card-img"
                   />
                   <div className="absolute top-4 left-4 bg-teak text-cream px-3 py-1 text-xs uppercase tracking-wider font-semibold">
                     {product.category}
