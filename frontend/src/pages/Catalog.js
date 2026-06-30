@@ -183,7 +183,7 @@ const Catalog = () => {
           <span className="font-devanagari text-base md:text-lg text-primary mt-2 block tracking-wider font-semibold">
             कस्टम और थोक फर्नीचर संग्रह
           </span>
-          <p className="text-[#3A3028] dark:text-[#FAF7F2]/90 font-sans text-[15px] md:text-base max-w-2xl mt-4 leading-relaxed font-medium">
+          <p className="text-[#5B5048] dark:text-[#FAF7F2] font-sans text-[15px] md:text-base max-w-2xl mt-4 leading-relaxed font-medium">
             Handcrafted with premium Sagwan (teak) wood in our Dharavi workshop. We offer B2B wholesale rates and custom sizing adjustments.
           </p>
         </div>
@@ -269,9 +269,10 @@ const Catalog = () => {
                       </h3>
                     </div>
 
-                    <p className="text-[#3A3028]/85 dark:text-gray-300 font-sans text-xs leading-relaxed flex-grow line-clamp-2">
+                    <p className="text-[#5B5048] dark:text-gray-300 font-sans text-xs leading-relaxed flex-grow line-clamp-2">
                       {product.description}
                     </p>
+
 
                     <div className="text-base font-bold text-primary font-serif pt-3 border-t border-borderSubtle flex items-center justify-between">
                       <span className="font-sans text-[10px] uppercase tracking-widest text-gray-400">Wholesale Price</span>

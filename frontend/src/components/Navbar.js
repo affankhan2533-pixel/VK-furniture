@@ -7,7 +7,15 @@ const Navbar = () => {
   const location = useLocation();
   const [cartCount, setCartCount] = useState(0);
   const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState(localStorage.getItem('vk_theme') || 'light');
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem('vk_theme');
+    if (saved) return saved;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
+
 
   // Track shopping cart quantity
   useEffect(() => {
@@ -81,7 +89,7 @@ const Navbar = () => {
         className={`sticky top-0 z-40 transition-all duration-300 ease-in-out h-[60px] md:h-[68px] lg:h-[78px] flex items-center ${
           scrolled
             ? 'bg-[#2F241E]/95 backdrop-blur-md border-b border-white/10 shadow-md text-white'
-            : 'bg-[#F8F6F2] border-b border-borderSubtle text-[#2B2B2B]'
+            : 'bg-light dark:bg-[#171411] border-b border-borderSubtle text-espresso dark:text-light'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -95,7 +103,7 @@ const Navbar = () => {
                 data-testid="logo-link"
               >
                 <span className={`font-serif text-xl md:text-2xl lg:text-3xl font-bold tracking-wide transition-colors duration-300 ease-in-out leading-none ${
-                  scrolled ? 'text-white' : 'text-[#2B2B2B]'
+                  scrolled ? 'text-white' : 'text-espresso dark:text-light'
                 }`}>
                   V.K. Furniture
                 </span>
@@ -117,7 +125,7 @@ const Navbar = () => {
                       ? 'text-primary font-bold'
                       : scrolled
                         ? 'text-white/90 hover:text-primary'
-                        : 'text-[#2B2B2B]/90 hover:text-primary'
+                        : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                   } before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-primary before:transition-all before:duration-300 ${
                     isActive(link.path) ? 'before:w-full' : 'hover:before:w-full'
                   }`}
@@ -131,7 +139,7 @@ const Navbar = () => {
                 to="/cart"
                 data-testid="nav-cart"
                 className={`relative flex items-center p-2 transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                 }`}
                 title="View Cart"
               >
@@ -147,7 +155,7 @@ const Navbar = () => {
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`p-2 transition-colors duration-300 ease-in-out cursor-pointer bg-transparent border-none ${
-                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
                 title="Toggle dark mode"
@@ -171,7 +179,7 @@ const Navbar = () => {
               <Link
                 to="/cart"
                 className={`relative p-3 transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                 }`}
               >
                 <ShoppingBag size={18} />
@@ -185,7 +193,7 @@ const Navbar = () => {
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                 className={`p-3 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
+                  scrolled ? 'text-white/90 hover:text-primary' : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
               >
@@ -196,7 +204,7 @@ const Navbar = () => {
                 onClick={() => setIsOpen(!isOpen)}
                 data-testid="mobile-menu-toggle"
                 className={`p-3 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
-                  scrolled ? 'text-white hover:text-primary' : 'text-[#2B2B2B] hover:text-primary'
+                  scrolled ? 'text-white hover:text-primary' : 'text-espresso dark:text-light hover:text-primary'
                 }`}
                 aria-label="Toggle Menu"
               >
@@ -207,6 +215,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
+
 
       {/* Mobile Slide-From-Right Drawer Menu */}
       <div 
