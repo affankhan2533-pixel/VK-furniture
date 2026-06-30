@@ -216,32 +216,33 @@ const Navbar = () => {
         onClick={() => setIsOpen(false)} 
       />
       <div 
-        className={`fixed top-0 right-0 bottom-0 w-[80%] max-w-[320px] bg-light dark:bg-[#3A3028] z-50 p-6 flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 bottom-0 w-[85vw] max-w-[380px] bg-[#4B3A2D] z-50 p-6 flex flex-col justify-between shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div>
-          <div className="flex justify-between items-center border-b border-borderSubtle pb-4 mb-6">
-            <span className="font-serif text-lg font-bold text-espresso dark:text-light">Menu</span>
+          <div className="flex justify-between items-center border-b border-primary/20 pb-4 mb-6">
+            <span className="font-serif text-xl font-bold text-[#F7F3EC]">Menu</span>
             <button 
               onClick={() => setIsOpen(false)} 
-              className="text-espresso dark:text-light hover:text-primary transition-colors bg-transparent border-none cursor-pointer p-1"
+              className="text-[#F7F3EC] hover:text-primary transition-colors bg-transparent border-none cursor-pointer w-11 h-11 flex items-center justify-center rounded-full hover:bg-white/10 transition-all p-0"
+              aria-label="Close menu"
             >
               <X size={22} />
             </button>
           </div>
 
-          <nav className="flex flex-col space-y-4 text-left">
+          <nav className="flex flex-col space-y-3.5 text-left">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 data-testid={`${link.id}-mobile`}
                 onClick={() => setIsOpen(false)}
-                className={`block py-2 text-sm font-sans font-bold uppercase tracking-widest transition-colors ${
+                className={`w-full flex items-center min-h-[48px] py-3.5 transition-all duration-200 ease-in-out hover:scale-[1.02] font-sans text-[18px] font-semibold uppercase tracking-wider ${
                   isActive(link.path)
-                    ? 'text-primary'
-                    : 'text-espresso/70 dark:text-light/70 hover:text-primary'
+                    ? 'text-primary bg-primary/10 border-l-4 border-primary pl-4 rounded-r-[8px]'
+                    : 'text-[#F7F3EC] border-l-4 border-transparent pl-4 hover:bg-primary/5 hover:text-primary'
                 }`}
               >
                 {link.name}
@@ -250,17 +251,18 @@ const Navbar = () => {
           </nav>
         </div>
 
-        <div className="pt-6 border-t border-borderSubtle">
+        <div className="pt-6 border-t border-primary/20 pb-8">
           <Link
             to="/contact"
             onClick={() => setIsOpen(false)}
-            className="flex items-center justify-center gap-2 bg-primary text-white py-3.5 hover:bg-primary-dark transition-all font-sans text-xs uppercase tracking-widest font-bold w-full"
+            className="flex items-center justify-center gap-2 bg-primary text-white py-4 hover:bg-primary-dark transition-all duration-200 font-sans text-xs uppercase tracking-widest font-bold w-full rounded-[10px] min-h-[48px] active:scale-95 shadow-md shadow-primary/20"
           >
             Get Custom Quote
             <ArrowRight size={14} />
           </Link>
         </div>
       </div>
+
     </>
   );
 };

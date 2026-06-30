@@ -197,3 +197,11 @@ h1, h2, h3, h4, .font-serif {
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
 }
 
+/* Hide floating WhatsApp button when mobile drawer menu is active */
+body.mobile-menu-open [data-testid="whatsapp-sticky"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.8) translate3d(0, 20px, 0) !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
