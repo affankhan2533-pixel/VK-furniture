@@ -174,6 +174,7 @@ const AIChatbot = () => {
           <form onSubmit={handleSend} className="p-3 border-t border-borderSubtle bg-white flex gap-2">
             <input
               type="text"
+              aria-label="AI Chat message input"
               placeholder="Ask AI Interior Guide..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -182,6 +183,7 @@ const AIChatbot = () => {
             <button
               type="submit"
               disabled={loading}
+              aria-label="Send message"
               className="bg-espresso text-cream hover:bg-teak px-3.5 flex items-center justify-center border-none cursor-pointer"
             >
               <Send size={14} />

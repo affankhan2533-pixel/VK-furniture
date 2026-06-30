@@ -47,7 +47,13 @@ const Preloader = ({ onComplete }) => {
         </div>
 
         {/* Custom Progress Bar */}
-        <div className="w-full bg-stone-800 h-[2px] overflow-hidden relative">
+        <div 
+          role="progressbar" 
+          aria-valuenow={progress} 
+          aria-valuemin="0" 
+          aria-valuemax="100" 
+          className="w-full bg-stone-800 h-[2px] overflow-hidden relative"
+        >
           <div
             className="bg-brass h-full transition-all duration-100 ease-out"
             style={{ width: `${progress}%` }}
