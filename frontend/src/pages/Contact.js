@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Phone, MapPin, Clock, Send, Star, AlertCircle, CheckCircle } from 'lucide-react';
+import { Phone, MapPin, Clock, Send, Star, AlertCircle, CheckCircle, Navigation } from 'lucide-react';
 
 const Contact = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
@@ -10,12 +10,13 @@ const Contact = () => {
     name: '',
     phone: '',
     email: '',
-    product_interest: 'Sofas',
+    subject: '',
     message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
@@ -29,11 +30,11 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
-    setSuccess(false);
 
-    // Simple validation
-    if (!formData.name || !formData.phone || !formData.message) {
-      setError('Please fill in all required fields (Name, Phone, Message).');
+    // Field Valdation
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.subject.trim() || !formData.message.trim()) {
+      setError('Please fill in all required fields (Name, Phone, Subject, Message).');
+      setShowErrorModal(true);
       setIsSubmitting(false);
       return;
     }
@@ -41,21 +42,31 @@ const Contact = () => {
     try {
       const response = await axios.post(`${API}/enquiries`, formData);
       if (response.status === 201) {
-        setSuccess(true);
+        setShowSuccessModal(true);
         setFormData({
           name: '',
           phone: '',
           email: '',
-          product_interest: 'Sofas',
+          subject: '',
           message: ''
         });
       }
     } catch (e) {
       console.error(e);
-      setError('Failed to submit enquiry. Please try again or contact us directly on WhatsApp.');
+      const serverMsg = e.response?.data?.detail || 'Failed to submit enquiry. Please check your network connection.';
+      setError(serverMsg);
+      setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Google Maps Interactivity links
+  const mapUrls = {
+    directions: "https://www.google.com/maps/dir/?api=1&destination=V.K.+Furniture+Dharavi+Mumbai&destination_place_id=ChIJF1UO-ivJ5zsRj8alT50kTeU",
+    navigation: "https://www.google.com/maps/search/?api=1&query=V.K.+Furniture+Dharavi+Mumbai&query_place_id=ChIJF1UO-ivJ5zsRj8alT50kTeU",
+    reviews: "https://www.google.com/maps?cid=16522851918342407823",
+    call: "tel:09821454706"
   };
 
   return (
@@ -82,23 +93,6 @@ const Contact = () => {
           <div className="lg:col-span-6 p-6 md:p-12 text-left flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-borderSubtle">
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-espresso mb-2">Send Enquiry</h2>
             <p className="text-stone font-sans text-xs uppercase tracking-widest font-semibold mb-6">B2B & Custom Design Requests</p>
-
-            {success && (
-              <div className="bg-[#25D366]/10 border border-[#25D366] text-[#1b9c4a] p-4 mb-6 flex items-start gap-3">
-                <CheckCircle className="flex-shrink-0 mt-0.5" size={18} />
-                <div className="text-sm font-sans">
-                  <span className="font-semibold block">Thank you!</span>
-                  Your enquiry has been successfully saved. Our team will contact you shortly.
-                </div>
-              </div>
-            )}
-
-            {error && (
-              <div className="bg-terracotta/10 border border-terracotta text-terracotta p-4 mb-6 flex items-start gap-3">
-                <AlertCircle className="flex-shrink-0 mt-0.5" size={18} />
-                <span className="text-sm font-sans">{error}</span>
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-4 font-sans text-sm">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -150,23 +144,20 @@ const Contact = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="product_interest" className="block text-stone font-semibold mb-1 uppercase tracking-wider text-[11px]">
-                    Product Interest
+                  <label htmlFor="subject" className="block text-stone font-semibold mb-1 uppercase tracking-wider text-[11px]">
+                    Subject <span className="text-terracotta">*</span>
                   </label>
-                  <select
-                    id="product_interest"
-                    name="product_interest"
-                    value={formData.product_interest}
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
                     onChange={handleChange}
-                    data-testid="contact-interest-select"
-                    className="w-full p-3 bg-cream border border-borderSubtle focus:outline-none focus:border-teak h-[46px]"
-                  >
-                    <option value="Sofas">Sofa Sets</option>
-                    <option value="Chairs">Accent Chairs</option>
-                    <option value="Tables">Dining Tables</option>
-                    <option value="Beds">Luxury Beds</option>
-                    <option value="Other">Other standalone furniture</option>
-                  </select>
+                    placeholder="e.g. Wholesale Sofa Inquiry"
+                    data-testid="contact-subject-input"
+                    className="w-full p-3 bg-cream border border-borderSubtle focus:outline-none focus:border-teak"
+                    required
+                  />
                 </div>
               </div>
 
@@ -190,20 +181,29 @@ const Contact = () => {
                 type="submit"
                 disabled={isSubmitting}
                 data-testid="contact-submit-btn"
-                className="bg-teak text-cream px-8 py-4 rounded-none hover:bg-walnut transition-colors uppercase tracking-widest text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer w-full"
+                className="bg-teak text-cream px-8 py-4 rounded-none hover:bg-walnut transition-colors uppercase tracking-widest text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer w-full disabled:bg-teak/70"
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-                <Send size={14} />
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-cream border-t-transparent" />
+                    <span>Submitting Enquiry...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <Send size={14} />
+                  </>
+                )}
               </button>
             </form>
           </div>
 
           {/* Right Info & Map Column */}
-          <div className="lg:col-span-6 flex flex-col">
+          <div className="lg:col-span-6 flex flex-col justify-between">
             {/* Contact details */}
             <div className="p-6 md:p-12 text-left bg-parchment flex-grow">
               <h2 className="font-serif text-2xl md:text-3xl font-bold text-espresso mb-6">Our Showroom</h2>
-              <div className="space-y-4 font-sans text-sm text-stone">
+              <div className="space-y-4 font-sans text-sm text-stone mb-6">
                 <div className="flex items-start gap-3">
                   <MapPin size={20} className="text-brass mt-0.5 flex-shrink-0" />
                   <span>
@@ -228,10 +228,55 @@ const Contact = () => {
                   <span className="text-xs text-stone-500">(Validated manufacturer on Google)</span>
                 </div>
               </div>
+
+              {/* Interactive Quick Links */}
+              <div className="border-t border-borderSubtle pt-6">
+                <h3 className="font-serif text-lg font-bold text-espresso mb-3">Google Maps Interaction</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <a
+                    href={mapUrls.directions}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-testid="map-action-directions"
+                    className="flex items-center justify-center gap-2 border border-teak text-teak p-3 hover:bg-teak hover:text-white transition-all text-xs font-semibold uppercase tracking-wider text-center"
+                  >
+                    <Navigation size={14} />
+                    Directions
+                  </a>
+                  <a
+                    href={mapUrls.call}
+                    data-testid="map-action-call"
+                    className="flex items-center justify-center gap-2 border border-teak text-teak p-3 hover:bg-teak hover:text-white transition-all text-xs font-semibold uppercase tracking-wider text-center"
+                  >
+                    <Phone size={14} />
+                    Call
+                  </a>
+                  <a
+                    href={mapUrls.navigation}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-testid="map-action-nav"
+                    className="flex items-center justify-center gap-2 border border-teak text-teak p-3 hover:bg-teak hover:text-white transition-all text-xs font-semibold uppercase tracking-wider text-center"
+                  >
+                    <Navigation size={14} className="rotate-45" />
+                    Navigate
+                  </a>
+                  <a
+                    href={mapUrls.reviews}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-testid="map-action-reviews"
+                    className="flex items-center justify-center gap-2 border border-teak text-teak p-3 hover:bg-teak hover:text-white transition-all text-xs font-semibold uppercase tracking-wider text-center"
+                  >
+                    <Star size={14} className="fill-current" />
+                    Reviews
+                  </a>
+                </div>
+              </div>
             </div>
             
             {/* Map Frame */}
-            <div className="h-[300px] border-t border-borderSubtle">
+            <div className="h-[250px] border-t border-borderSubtle relative">
               <iframe
                 title="VK Furniture Google Maps Location"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.168798547285!2d72.8596644!3d19.0563844!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c92bfa0ee515%3A0xe54d249d97a5c68f!2sV.K.%20Furniture!5e0!3m2!1sen!2sin!4v1703900000000!5m2!1sen!2sin"
@@ -245,6 +290,50 @@ const Contact = () => {
 
         </div>
       </div>
+
+      {/* Success Popup Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-espresso/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-testid="success-modal">
+          <div className="bg-white border border-borderSubtle max-w-md w-full p-8 shadow-2xl text-center space-y-4">
+            <div className="w-16 h-16 bg-[#25D366]/10 text-[#25D366] rounded-full flex items-center justify-center mx-auto border border-[#25D366]/30">
+              <CheckCircle size={32} />
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-espresso">Enquiry Received!</h3>
+            <p className="text-stone font-sans text-sm leading-relaxed">
+              Your inquiry has been successfully saved to our cloud database. An automatic email confirmation has been sent to your address. Our Dharavi team will reach out shortly.
+            </p>
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              data-testid="success-modal-dismiss"
+              className="bg-teak text-cream px-6 py-3 font-sans text-xs uppercase tracking-widest font-bold hover:bg-walnut transition-colors w-full cursor-pointer"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Error Popup Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 bg-espresso/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" data-testid="error-modal">
+          <div className="bg-white border border-borderSubtle max-w-md w-full p-8 shadow-2xl text-center space-y-4">
+            <div className="w-16 h-16 bg-terracotta/10 text-terracotta rounded-full flex items-center justify-center mx-auto border border-terracotta/30">
+              <AlertCircle size={32} />
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-espresso">Submission Failed</h3>
+            <p className="text-stone font-sans text-sm leading-relaxed">
+              {error || 'Failed to submit enquiry. Please check your network or try again.'}
+            </p>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              data-testid="error-modal-dismiss"
+              className="bg-espresso text-cream px-6 py-3 font-sans text-xs uppercase tracking-widest font-bold hover:bg-teak transition-colors w-full cursor-pointer"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

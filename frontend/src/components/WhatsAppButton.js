@@ -1,12 +1,55 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 
 const WhatsAppButton = () => {
-  const whatsappUrl = "https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20visited%20your%20website%20and%20want%20to%20enquire%20about%20your%20custom%2Fwholesale%20furniture.";
+  const location = useLocation();
+
+  const getWhatsappUrl = () => {
+    const path = location.pathname;
+    let pageName = "Homepage";
+    let productName = "General Teak Wood Furniture";
+
+    if (path === '/') {
+      pageName = "Home Page";
+      productName = "General Collection";
+    } else if (path === '/catalog') {
+      pageName = "Collections Catalog";
+      productName = "Store Catalog Items";
+    } else if (path.startsWith('/product/')) {
+      pageName = "Product Specs Page";
+      const slug = path.split('/').pop() || "";
+      productName = slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    } else if (path === '/gallery') {
+      pageName = "Gallery Page";
+      productName = "Gallery Showcases";
+    } else if (path === '/about') {
+      pageName = "About Us Page";
+      productName = "Wholesale Custom Manufacturing";
+    } else if (path === '/contact') {
+      pageName = "Contact Page";
+      productName = "Custom Quote Query";
+    } else if (path === '/custom-planner') {
+      pageName = "Custom Furniture Planner";
+      productName = "Bespoke Design Configuration";
+    }
+
+    const text = `Hello VK Furniture,
+I am interested in:
+Product: ${productName}
+Page: ${pageName}
+
+Please contact me.`;
+
+    return `https://wa.me/919821454706?text=${encodeURIComponent(text)}`;
+  };
 
   return (
     <a
-      href={whatsappUrl}
+      href={getWhatsappUrl()}
       target="_blank"
       rel="noopener noreferrer"
       data-testid="whatsapp-sticky"
