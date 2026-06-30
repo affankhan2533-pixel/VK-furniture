@@ -129,16 +129,16 @@ const Home = () => {
       />
 
       {/* Cinematic Parallax Hero Section */}
-      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-espresso">
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#0A0A0A]">
         
         {/* Parallax / Zoom Background */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg"
             alt="Premium Furniture Setup"
-            className="w-full h-full object-cover opacity-40 hero-bg-zoom"
+            className="w-full h-full object-cover opacity-20 hero-bg-zoom"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/45 to-transparent"></div>
+          <div className="absolute inset-0 bg-black/60"></div>
         </div>
 
         {/* Dust Overlay Animation */}
@@ -159,10 +159,10 @@ const Home = () => {
         </div>
 
         {/* Content Box */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20 text-center py-24 md:py-36">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-30 text-center py-24 md:py-36">
           <div className="flex flex-col items-center space-y-7 max-w-4xl mx-auto">
             
-            <div className="hero-fade-up flex items-center gap-2 bg-white/5 backdrop-blur-md py-1.5 px-4 border border-white/10 rounded-full w-fit">
+            <div className="hero-fade-up flex items-center gap-2 bg-white/10 backdrop-blur-md py-1.5 px-4 border border-white/20 rounded-full w-fit">
               <Star size={13} fill="#B08D57" className="text-primary" />
               <span className="text-[10px] uppercase tracking-widest font-bold text-primary font-sans">
                 Genuine Seasoned Sagwan Teak Wood
@@ -177,7 +177,7 @@ const Home = () => {
               थोक और कस्टम सागवान (टीक) फर्नीचर निर्माता
             </span>
 
-            <p className="hero-fade-up text-sm md:text-base text-white/80 font-sans max-w-2xl leading-relaxed">
+            <p className="hero-fade-up text-sm md:text-base text-white font-medium font-sans max-w-2xl leading-relaxed md:leading-[1.7] tracking-wide">
               Serving dealers, hotels, and homeowners since 1999. Get B2B wholesale rates on custom-carved luxury sofas, imperial beds, and glass dining suites.
             </p>
 
@@ -185,13 +185,13 @@ const Home = () => {
               <Link
                 to="/catalog"
                 data-testid="hero-catalog-btn"
-                className="luxury-btn shine-hover bg-primary text-white border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold"
+                className="bg-primary hover:bg-primary-dark text-white border border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
               >
                 Explore Collection
               </Link>
               <Link
                 to="/custom-planner"
-                className="luxury-btn border-white/30 text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold hover:bg-white/10"
+                className="border border-white hover:border-primary text-white hover:bg-primary hover:text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
               >
                 Custom Furniture
               </Link>
@@ -199,6 +199,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+
 
       {/* Stats Strip */}
       <section className="bg-dark text-white py-10 border-y border-borderSubtle">
