@@ -170,7 +170,7 @@ const Navbar = () => {
             <div className="flex items-center gap-2 lg:hidden">
               <Link
                 to="/cart"
-                className={`relative p-2 transition-colors duration-300 ease-in-out ${
+                className={`relative p-3 transition-colors duration-300 ease-in-out ${
                   scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
                 }`}
               >
@@ -184,7 +184,7 @@ const Navbar = () => {
 
               <button
                 onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
+                className={`p-3 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
                   scrolled ? 'text-white/90 hover:text-primary' : 'text-[#2B2B2B]/90 hover:text-primary'
                 }`}
                 aria-label="Toggle dark mode"
@@ -195,13 +195,14 @@ const Navbar = () => {
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 data-testid="mobile-menu-toggle"
-                className={`p-2 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
+                className={`p-3 bg-transparent border-none cursor-pointer transition-colors duration-300 ease-in-out ${
                   scrolled ? 'text-white hover:text-primary' : 'text-[#2B2B2B] hover:text-primary'
                 }`}
                 aria-label="Toggle Menu"
               >
                 {isOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
+
             </div>
           </div>
         </div>

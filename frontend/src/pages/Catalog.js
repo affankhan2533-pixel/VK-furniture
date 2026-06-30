@@ -180,20 +180,20 @@ const Catalog = () => {
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-16">
           
-          {/* Category Chips */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            <Filter size={15} className="text-gray-500 flex-shrink-0 mr-1.5" />
+          {/* Category Chips - Swipe Friendly on Mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none snap-x w-full md:w-auto">
+            <Filter size={15} className="text-gray-500 flex-shrink-0 mr-1.5 snap-align-start" />
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
                 data-testid={`category-chip-${cat.toLowerCase()}`}
-                className={`px-6 py-2 border font-sans text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer ${
+                className={`px-6 py-2.5 rounded-full font-sans text-xs tracking-widest uppercase transition-all duration-300 cursor-pointer snap-align-start flex-shrink-0 ${
                   selectedCategory === cat
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-white dark:bg-dark-light text-gray-500 border-borderSubtle hover:border-primary hover:text-dark'
+                    ? 'bg-primary text-white border-primary shadow-md shadow-primary/20'
+                    : 'bg-white dark:bg-[#3A3028] text-gray-500 border border-borderSubtle hover:border-primary hover:text-dark dark:hover:text-white'
                 }`}
               >
                 {cat}
@@ -201,7 +201,7 @@ const Catalog = () => {
             ))}
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar - Premium Rounded */}
           <div className="relative max-w-md w-full">
             <input
               type="text"
@@ -209,12 +209,11 @@ const Catalog = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               data-testid="catalog-search-input"
-              className="w-full pl-10 pr-4 py-3 bg-white dark:bg-dark-light border border-borderSubtle font-sans text-xs focus:outline-none focus:border-primary text-dark placeholder-gray-400"
+              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#3A3028] border border-borderSubtle font-sans text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-dark dark:text-light placeholder-gray-400 rounded-full shadow-sm transition-all"
             />
-            <Search className="absolute left-3.5 top-3.5 text-gray-500" size={15} />
+            <Search className="absolute left-4 top-3.5 text-gray-500" size={15} />
           </div>
         </div>
-
 
         {/* Product Grid */}
         {filteredProducts.length > 0 ? (
@@ -223,44 +222,49 @@ const Catalog = () => {
               <div
                 key={product.id}
                 data-testid={`product-card-${product.id}`}
-                className="bg-white dark:bg-dark-light border border-borderSubtle flex flex-col group overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 reveal glass-hover-card"
+                className="bg-white dark:bg-[#3A3028] border border-borderSubtle flex flex-col group overflow-hidden rounded-[20px] shadow-sm hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1.5 transition-all duration-300 reveal"
               >
-                {/* Image */}
-                <div className="h-[280px] overflow-hidden relative border-b border-borderSubtle bg-parchment image-reveal active">
+                {/* Image with overlay */}
+                <div className="h-[280px] overflow-hidden relative border-b border-borderSubtle bg-parchment">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 furniture-card-img"
+                    className="w-full h-full object-cover scale-100 group-hover:scale-[1.05] transition-transform duration-500 furniture-card-img"
                   />
-                  <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 text-[9px] uppercase tracking-widest font-bold font-sans">
+                  {/* Soft glass gradient overlay over image */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/15 to-transparent"></div>
+                  
+                  <div className="absolute top-4 left-4 bg-primary text-white px-3 py-1 text-[9px] uppercase tracking-widest font-bold font-sans rounded-full">
                     {product.category}
                   </div>
                 </div>
 
-                {/* Details */}
-                <div className="p-6 flex flex-col flex-grow text-left space-y-3">
-                  <h3 className="font-serif text-xl md:text-2xl font-bold leading-tight">
-                    {product.name}
-                  </h3>
-                  
-                  <p className="text-[10px] uppercase tracking-widest text-primary font-bold">
-                    {product.material}
-                  </p>
+                {/* Details Section */}
+                <div className="p-8 flex flex-col flex-grow text-left space-y-4">
+                  <div className="space-y-1">
+                    <p className="text-[10px] uppercase tracking-widest text-primary font-bold font-sans">
+                      {product.material}
+                    </p>
+                    <h3 className="font-serif text-2xl font-bold leading-tight text-espresso dark:text-light">
+                      {product.name}
+                    </h3>
+                  </div>
 
-                  <p className="text-gray-500 dark:text-gray-400 font-sans text-xs leading-relaxed flex-grow">
+                  <p className="text-gray-500 dark:text-gray-300 font-sans text-xs leading-relaxed flex-grow line-clamp-2">
                     {product.description}
                   </p>
 
-                  <div className="text-sm font-bold text-primary font-mono pt-3 border-t border-borderSubtle">
-                    {product.price}
+                  <div className="text-base font-bold text-primary font-serif pt-3 border-t border-borderSubtle flex items-center justify-between">
+                    <span className="font-sans text-[10px] uppercase tracking-widest text-gray-400">Wholesale Price</span>
+                    <span>{product.price}</span>
                   </div>
 
-                  {/* CTAs */}
-                  <div className="grid grid-cols-2 gap-3 pt-4">
+                  {/* Showroom specs & whatsapp actions */}
+                  <div className="grid grid-cols-2 gap-3 pt-2">
                     <Link
                       to={`/product/${product.id}`}
                       data-testid={`view-detail-${product.id}`}
-                      className="luxury-btn py-3 text-center text-[10px] uppercase tracking-widest font-bold font-sans flex items-center justify-center gap-1.5"
+                      className="border border-[#2B2621] dark:border-light/20 text-[#2B2621] dark:text-light hover:bg-[#2B2621] hover:text-white dark:hover:bg-light dark:hover:text-[#2B2621] py-3 text-center text-[10px] uppercase tracking-widest font-bold font-sans flex items-center justify-center gap-1.5 transition-all duration-300 rounded-[10px] min-h-[44px]"
                     >
                       View Specs
                     </Link>
@@ -269,7 +273,7 @@ const Catalog = () => {
                       target="_blank"
                       rel="noreferrer"
                       data-testid={`enquire-whatsapp-${product.id}`}
-                      className="bg-[#25D366] text-white py-3 flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-widest font-bold font-sans hover:bg-[#20ba5a] transition-all"
+                      className="bg-primary text-white hover:bg-primary-dark py-3 flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-widest font-bold font-sans hover:bg-[#8C6A3F] transition-all duration-300 rounded-[10px] min-h-[44px]"
                     >
                       <MessageSquare size={14} className="fill-white stroke-none" />
                       Enquire
@@ -280,11 +284,11 @@ const Catalog = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white dark:bg-dark-light border border-borderSubtle">
+          <div className="text-center py-20 bg-white dark:bg-[#3A3028] border border-borderSubtle rounded-[20px]">
             <p className="text-gray-500 font-serif text-lg">No items match your filter criteria.</p>
             <button
               onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
-              className="mt-4 bg-primary text-white px-6 py-2.5 text-xs uppercase font-sans tracking-widest font-bold border-none cursor-pointer"
+              className="mt-4 bg-primary text-white px-6 py-2.5 text-xs uppercase font-sans tracking-widest font-bold border-none cursor-pointer rounded-full min-h-[44px]"
             >
               Reset Filters
             </button>

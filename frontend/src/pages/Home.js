@@ -129,7 +129,7 @@ const Home = () => {
       />
 
       {/* Cinematic Parallax Hero Section */}
-      <section className="relative min-h-[65vh] md:min-h-[75vh] lg:min-h-[95vh] flex items-center justify-center overflow-hidden bg-[#2B2621]">
+      <section className="relative min-h-[60vh] md:min-h-[75vh] lg:min-h-[95vh] flex items-center justify-center overflow-hidden bg-[#2B2621]">
         
         {/* Parallax / Zoom Background */}
         <div className="absolute inset-0 z-0">
@@ -159,8 +159,8 @@ const Home = () => {
         </div>
 
         {/* Content Box */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-30 text-center py-16 md:py-28 lg:py-36">
-          <div className="flex flex-col items-center space-y-7 max-w-4xl mx-auto">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-30 text-center py-10 md:py-28 lg:py-36 flex items-center justify-center min-h-[60vh] md:min-h-[75vh] lg:min-h-[95vh]">
+          <div className="flex flex-col items-center space-y-7 max-w-4xl mx-auto w-full">
             
             <div className="hero-fade-up flex items-center gap-2 bg-white/15 backdrop-blur-md py-1.5 px-4 border border-white/25 rounded-full w-fit">
               <Star size={13} fill="#B08D57" className="text-primary" />
@@ -169,7 +169,7 @@ const Home = () => {
               </span>
             </div>
 
-            <h1 className="hero-fade-up font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] hero-text-shadow">
+            <h1 className="hero-fade-up font-serif text-[36px] sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] hero-text-shadow">
               Crafting <span className="text-primary italic">Timeless</span> Elegance
             </h1>
 
@@ -181,17 +181,17 @@ const Home = () => {
               Serving dealers, hotels, and homeowners since 1999. Get B2B wholesale rates on custom-carved luxury sofas, imperial beds, and glass dining suites.
             </p>
 
-            <div className="hero-fade-up flex flex-col sm:flex-row gap-4 pt-4 w-full justify-center px-4 sm:px-0">
+            <div className="hero-fade-up flex flex-col sm:flex-row gap-[14px] pt-4 w-full justify-center px-4 sm:px-0">
               <Link
                 to="/catalog"
                 data-testid="hero-catalog-btn"
-                className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white border border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
+                className="w-full sm:w-auto h-[54px] sm:h-auto flex items-center justify-center bg-primary hover:bg-primary-dark text-white border border-primary px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer rounded-[14px] sm:rounded-none min-h-[44px]"
               >
                 Explore Collection
               </Link>
               <Link
                 to="/custom-planner"
-                className="w-full sm:w-auto border border-white hover:border-primary text-white hover:bg-primary hover:text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer"
+                className="w-full sm:w-auto h-[54px] sm:h-auto flex items-center justify-center border border-white hover:border-primary text-white hover:bg-primary hover:text-white px-10 py-4 font-sans tracking-widest text-center uppercase text-xs font-bold transition-all duration-300 cursor-pointer rounded-[14px] sm:rounded-none min-h-[44px]"
               >
                 Custom Furniture
               </Link>
@@ -201,14 +201,18 @@ const Home = () => {
       </section>
 
 
-      {/* Stats Strip */}
-      <section className="bg-[#3A3028] text-white py-10 border-t border-primary/20 border-b border-primary/10 shadow-inner relative z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+
+      {/* Stats Strip - Upgraded to Premium Cards */}
+      <section className="bg-[#3A3028] text-white py-14 md:py-16 border-t border-primary/20 border-b border-primary/10 shadow-inner relative z-20 px-4 sm:px-0">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center">
             {stats.map((stat, i) => (
-              <div key={i} className="flex flex-col space-y-1">
-                <span className="font-serif text-3xl md:text-4xl font-bold text-primary">{stat.value}</span>
-                <span className="font-sans text-[10px] uppercase tracking-widest text-[#FAF7F2]/80 font-bold">{stat.label}</span>
+              <div 
+                key={i} 
+                className="bg-[#2B2621]/45 backdrop-blur-sm border border-white/10 rounded-[14px] p-6 flex flex-col items-center justify-center space-y-2.5 transition-transform duration-300 hover:scale-[1.02] min-h-[44px]"
+              >
+                <span className="font-serif text-3xl md:text-4xl font-bold text-primary leading-none">{stat.value}</span>
+                <span className="font-sans text-[10px] uppercase tracking-widest text-[#FAF7F2]/80 font-bold leading-tight">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -216,9 +220,11 @@ const Home = () => {
       </section>
 
 
+
       {/* Balanced Grid Featured Collections */}
-      <section className="py-24 bg-light text-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 md:py-28 bg-light text-dark px-4 sm:px-0">
+        <div className="max-w-7xl mx-auto">
+
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold leading-tight tracking-wide text-espresso dark:text-light">
               Featured Collections
@@ -286,8 +292,9 @@ const Home = () => {
 
 
       {/* Review Wall */}
-      <section className="py-24 bg-[#FAF7F2] border-y border-borderSubtle text-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 md:py-28 bg-[#FAF7F2] border-y border-borderSubtle text-dark px-4 sm:px-0">
+        <div className="max-w-7xl mx-auto">
+
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold leading-tight">
               Words From Our Clients
@@ -326,8 +333,9 @@ const Home = () => {
       </section>
 
       {/* Workshop Location CTA Strip */}
-      <section className="py-24 bg-light text-dark">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 md:py-28 bg-light text-dark px-4 sm:px-0">
+        <div className="max-w-7xl mx-auto">
+
           <div className="border border-borderSubtle grid grid-cols-1 lg:grid-cols-2">
             <div className="p-8 md:p-16 flex flex-col justify-center space-y-6 text-left">
               <h2 className="font-serif text-3xl md:text-4xl font-bold leading-tight">
