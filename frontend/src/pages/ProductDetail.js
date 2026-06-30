@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, CheckCircle, ShieldCheck, Truck, Heart, Share2, Download, Maximize2, FileText, X } from 'lucide-react';
+import { ArrowLeft, MessageSquare, CheckCircle, ShieldCheck, Truck, Heart, Share2, Download, Maximize2, FileText, X, ShoppingBag } from 'lucide-react';
 import axios from 'axios';
 import SEO from '../components/SEO';
 import Furniture3DViewer from '../components/Furniture3DViewer';
@@ -230,9 +230,43 @@ const ProductDetail = () => {
   const [quoteSubmitting, setQuoteSubmitting] = useState(false);
   const [quoteSuccess, setQuoteSuccess] = useState(false);
   const [quoteError, setQuoteError] = useState('');
+  const [addedToCart, setAddedToCart] = useState(false);
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
   const API = `${BACKEND_URL}/api`;
+
+  const handleAddToCart = () => {
+    const savedCart = JSON.parse(localStorage.getItem('vk_cart') || '[]');
+    const exists = savedCart.find(item => item.id === product.id);
+    let updatedCart = [...savedCart];
+    
+    const approx_prices = {
+      "handcrafted-teak-sofa": 45000,
+      "l-shape-sectional-sofa": 65000,
+      "modern-sofa-cum-bed": 38000,
+      "handcrafted-teak-dining-set": 48000,
+      "royal-hydraulic-bed": 55000,
+      "vintage-carved-bed": 60000,
+      "upholstered-accent-armchair": 18000
+    };
+    const price = approx_prices[product.id] || 35000;
+
+    if (exists) {
+      updatedCart = savedCart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+    } else {
+      updatedCart.push({
+        id: product.id,
+        name: product.name,
+        price: price,
+        image: productImages[0],
+        quantity: 1
+      });
+    }
+    
+    localStorage.setItem('vk_cart', JSON.stringify(updatedCart));
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   useEffect(() => {
     // 1. Fallback from local static products array
@@ -549,11 +583,22 @@ const ProductDetail = () => {
                 WhatsApp Enquiry
               </a>
               <button
+                onClick={handleAddToCart}
+                data-testid="add-to-cart-detail"
+                className="bg-espresso text-cream py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-teak transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
+              >
+                <ShoppingBag size={18} />
+                {addedToCart ? 'Added to Cart!' : 'Add to Shopping Cart'}
+              </button>
+            </div>
+
+            <div className="pt-2">
+              <button
                 onClick={() => setShowQuoteModal(true)}
                 data-testid="request-quote-detail"
-                className="bg-teak text-cream py-4 text-center text-sm uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
+                className="w-full bg-teak text-cream py-3 text-center text-xs uppercase tracking-widest font-bold font-sans hover:bg-walnut transition-all flex items-center justify-center gap-2 cursor-pointer border-none"
               >
-                <FileText size={18} />
+                <FileText size={16} />
                 Request Custom Quote
               </button>
             </div>

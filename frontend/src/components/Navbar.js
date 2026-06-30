@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, MessageSquare } from 'lucide-react';
+import { Menu, X, Phone, MessageSquare, ShoppingBag } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const savedCart = JSON.parse(localStorage.getItem('vk_cart') || '[]');
+      const count = savedCart.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(count);
+    };
+
+    updateCartCount();
+    window.addEventListener('storage', updateCartCount);
+    const interval = setInterval(updateCartCount, 1500);
+
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+      clearInterval(interval);
+    };
+  }, []);
 
   const navLinks = [
     { name: 'Home', path: '/', id: 'nav-home' },
@@ -52,6 +70,19 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <Link
+              to="/cart"
+              data-testid="nav-cart"
+              className="relative text-stone hover:text-teak flex items-center p-2 mr-2"
+              title="View Cart"
+            >
+              <ShoppingBag size={18} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-brass text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
             <a
               href="tel:09821454706"
               data-testid="nav-call-btn"

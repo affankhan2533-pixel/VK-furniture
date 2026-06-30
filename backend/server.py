@@ -904,6 +904,89 @@ async def ai_chat(payload: ChatMessage):
         "layout": layout
     }
 
+class OrderCreate(BaseModel):
+    name: str
+    phone: str
+    email: Optional[EmailStr] = None
+    address: str
+    city: str
+    pincode: str
+    items: List[dict]
+    subtotal: float
+    shipping: float
+    discount: float
+    total: float
+    coupon: Optional[str] = None
+
+@api_router.post("/orders", status_code=201)
+async def create_order(payload: OrderCreate):
+    oid = f"VK-ORD-{str(uuid.uuid4())[:8].upper()}"
+    doc = payload.model_dump()
+    doc["id"] = oid
+    doc["timestamp"] = datetime.now(timezone.utc).isoformat()
+    doc["status"] = "Order Received"
+    doc["step"] = 1
+    doc["payment_status"] = "Paid" # Simulatively verified
+    
+    await db.orders.insert_one(doc)
+    logger.info(f"Order created: {oid} for {payload.name}")
+    
+    # Optional SMTP alerts to buyer
+    if payload.email:
+        order_details_html = "".join([
+            f"<li>{item['name']} x {item['quantity']} - ₹{item['price']}</li>"
+            for item in payload.items
+        ])
+        body = f"""
+        <div style="font-family:sans-serif;color:#2C241B;background:#F9F6F0;padding:24px;border:1px solid #E5E0D8;">
+          <h2 style="font-family:serif;color:#4A3525;">V.K. Furniture Showroom Order Confirmation</h2>
+          <p>Dear {payload.name},</p>
+          <p>Thank you for shopping with us! We have received your payment and registered your order <strong>{oid}</strong>.</p>
+          <hr style="border:none;border-top:1px dashed #E5E0D8;margin:16px 0;"/>
+          <h4>Items Ordered:</h4>
+          <ul>{order_details_html}</ul>
+          <p><strong>Total Amount Paid:</strong> ₹{payload.total:,.2f}</p>
+          <p><strong>Shipping Address:</strong> {payload.address}, {payload.city} - {payload.pincode}</p>
+          <p>Our workshop team in Dharavi is selecting the seasoned Sagwan timber blocks. You can track your order using your contact phone number on our website!</p>
+          <br/>
+          <p>Best Regards,</p>
+          <p><strong>V.K. Furniture Team</strong><br/>Naik Nagar, Dharavi, Mumbai</p>
+        </div>
+        """
+        send_email_notification(payload.email, f"Order Confirmed: {oid} - V.K. Furniture", body)
+        
+    return doc
+
+# ── Admin Dashboard Orders list ───────────────────────────────────────────────
+@api_router.get("/admin/orders")
+async def get_orders():
+    cursor = db.orders.find({})
+    results = await cursor.to_list(length=100)
+    for r in results:
+        if "_id" in r: del r["_id"]
+    return results
+
+class OrderStepUpdate(BaseModel):
+    status: str
+    step: int
+
+@api_router.put("/admin/orders/{oid}")
+async def update_order_step(oid: str, payload: OrderStepUpdate):
+    res = await db.orders.update_one(
+        {"id": oid}, 
+        {"$set": {"status": payload.status, "step": payload.step}}
+    )
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"message": "Order tracking status updated successfully"}
+
+@api_router.delete("/admin/orders/{oid}")
+async def delete_order(oid: str):
+    res = await db.orders.delete_one({"id": oid})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {"message": "Order removed successfully"}
+
 app.include_router(api_router)
 
 # CORS Middlewares

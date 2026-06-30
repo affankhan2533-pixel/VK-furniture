@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   LayoutDashboard, Inbox, Armchair, Image, Users2, LogOut, 
-  Plus, Trash2, Edit, CheckCircle, Clock, Eye, RefreshCw, Calendar
+  Plus, Trash2, Edit, CheckCircle, Clock, Eye, RefreshCw, Calendar, ShoppingCart
 } from 'lucide-react';
 import SEO from '../components/SEO';
 
@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [gallery, setGallery] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Products form states
@@ -48,6 +49,7 @@ const AdminDashboard = () => {
           const galRes = await axios.get(`${BACKEND_URL}/api/gallery`, config);
           const custRes = await axios.get(`${BACKEND_URL}/api/admin/customers`, config);
           const aptsRes = await axios.get(`${BACKEND_URL}/api/admin/appointments`, config);
+          const ordersRes = await axios.get(`${BACKEND_URL}/api/admin/orders`, config);
 
           setStats(statsRes.data);
           setEnquiries(enqsRes.data);
@@ -55,6 +57,7 @@ const AdminDashboard = () => {
           setGallery(galRes.data);
           setCustomers(custRes.data);
           setAppointments(aptsRes.data);
+          setOrders(ordersRes.data);
         } catch (err) {
           console.error(err);
           if (err.response?.status === 401) {
@@ -80,6 +83,7 @@ const AdminDashboard = () => {
       const galRes = await axios.get(`${BACKEND_URL}/api/gallery`, config);
       const custRes = await axios.get(`${BACKEND_URL}/api/admin/customers`, config);
       const aptsRes = await axios.get(`${BACKEND_URL}/api/admin/appointments`, config);
+      const ordersRes = await axios.get(`${BACKEND_URL}/api/admin/orders`, config);
 
       setStats(statsRes.data);
       setEnquiries(enqsRes.data);
@@ -87,6 +91,7 @@ const AdminDashboard = () => {
       setGallery(galRes.data);
       setCustomers(custRes.data);
       setAppointments(aptsRes.data);
+      setOrders(ordersRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -237,6 +242,26 @@ const AdminDashboard = () => {
     }
   };
 
+  // E-commerce orders CRUD
+  const handleUpdateOrderStep = async (oid, newStatus, newStep) => {
+    try {
+      await axios.put(`${BACKEND_URL}/api/admin/orders/${oid}`, { status: newStatus, step: parseInt(newStep) });
+      triggerDataRefresh();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteOrder = async (oid) => {
+    if (!window.confirm("Are you sure you want to cancel this customer order?")) return;
+    try {
+      await axios.delete(`${BACKEND_URL}/api/admin/orders/${oid}`);
+      triggerDataRefresh();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="bg-cream min-h-screen flex flex-col items-center justify-center space-y-4">
@@ -331,6 +356,20 @@ const AdminDashboard = () => {
               {appointments.length > 0 && (
                 <span className="ml-auto bg-brass text-espresso text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                   {appointments.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-xs uppercase tracking-wider font-bold transition-all ${
+                activeTab === 'orders' ? 'bg-teak text-cream' : 'text-stone-300 hover:bg-stone-800'
+              }`}
+            >
+              <ShoppingCart size={16} />
+              Orders
+              {orders.length > 0 && (
+                <span className="ml-auto bg-brass text-espresso text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                  {orders.length}
                 </span>
               )}
             </button>
@@ -860,6 +899,94 @@ const AdminDashboard = () => {
                     <tr>
                       <td colSpan="5" className="px-6 py-8 text-center text-stone">
                         No scheduled showroom appointments.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 7: ORDERS MANAGEMENT */}
+        {activeTab === 'orders' && (
+          <div className="space-y-6 text-left">
+            <div>
+              <h2 className="font-serif text-3xl font-bold text-espresso leading-none">Customer Orders</h2>
+              <p className="text-xs text-stone font-sans mt-1">Track payments, shipping options, and modify active production fabrication steps.</p>
+            </div>
+
+            <div className="bg-white border border-borderSubtle shadow-sm overflow-hidden">
+              <table className="min-w-full divide-y divide-borderSubtle font-sans text-xs">
+                <thead className="bg-cream">
+                  <tr>
+                    <th className="px-6 py-4 font-bold text-left uppercase tracking-wider text-espresso">Order Reference</th>
+                    <th className="px-6 py-4 font-bold text-left uppercase tracking-wider text-espresso">Client</th>
+                    <th className="px-6 py-4 font-bold text-left uppercase tracking-wider text-espresso">Purchased Items</th>
+                    <th className="px-6 py-4 font-bold text-center uppercase tracking-wider text-espresso">Pay Total</th>
+                    <th className="px-6 py-4 font-bold text-center uppercase tracking-wider text-espresso">Production Stage</th>
+                    <th className="px-6 py-4 font-bold text-right uppercase tracking-wider text-espresso">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-borderSubtle bg-white">
+                  {orders.length > 0 ? (
+                    orders.map((ord, idx) => (
+                      <tr key={idx} className="hover:bg-cream/10">
+                        <td className="px-6 py-4 text-left font-mono">
+                          <span className="font-bold text-teak block">{ord.id}</span>
+                          <span className="text-[10px] text-stone">{new Date(ord.timestamp).toLocaleDateString()}</span>
+                        </td>
+                        <td className="px-6 py-4 text-left">
+                          <div className="font-semibold">{ord.name}</div>
+                          <div className="text-stone font-mono">{ord.phone}</div>
+                          <div className="text-[10px] text-stone-500 truncate max-w-[150px]">{ord.address}, {ord.city}</div>
+                        </td>
+                        <td className="px-6 py-4 text-left text-stone max-w-xs">
+                          {ord.items.map((it, i) => (
+                            <div key={i} className="truncate">
+                              {it.name} <strong className="font-mono text-teak">x{it.quantity}</strong>
+                            </div>
+                          ))}
+                        </td>
+                        <td className="px-6 py-4 text-center font-bold text-espresso font-mono">
+                          ₹ {ord.total.toLocaleString('en-IN')}
+                        </td>
+                        <td className="px-6 py-4 text-center whitespace-nowrap">
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold block mb-1">
+                            {ord.status}
+                          </span>
+                          <span className="text-[10px] text-stone-400">Step {ord.step} of 6</span>
+                        </td>
+                        <td className="px-6 py-4 text-right whitespace-nowrap space-x-2">
+                          <select
+                            value={`${ord.status}|${ord.step}`}
+                            onChange={(e) => {
+                              const [status, step] = e.target.value.split('|');
+                              handleUpdateOrderStep(ord.id, status, step);
+                            }}
+                            className="px-2 py-1.5 border border-borderSubtle bg-cream text-[10px] font-bold focus:outline-none"
+                          >
+                            <option value="Order Received|1">1. Received</option>
+                            <option value="Raw Wood Selection|2">2. Wood Setup</option>
+                            <option value="Artisan Carving|3">3. Carving</option>
+                            <option value="Polishing & Finishing|4">4. Polishing</option>
+                            <option value="Out for Delivery|5">5. Out for Delivery</option>
+                            <option value="Delivered|6">6. Delivered</option>
+                          </select>
+                          <button
+                            onClick={() => handleDeleteOrder(ord.id)}
+                            className="p-1.5 border border-red-200 text-red-500 hover:bg-red-50 cursor-pointer"
+                            title="Cancel Order"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-8 text-center text-stone">
+                        No transactions or orders currently placed.
                       </td>
                     </tr>
                   )}

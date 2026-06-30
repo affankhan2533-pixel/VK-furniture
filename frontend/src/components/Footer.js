@@ -45,6 +45,9 @@ const Footer = () => {
                 <Link to="/catalog" data-testid="footer-catalog" className="hover:text-brass transition-colors">Featured Catalog</Link>
               </li>
               <li>
+                <Link to="/shipping-returns" data-testid="footer-shipping" className="hover:text-brass transition-colors">Shipping & Returns</Link>
+              </li>
+              <li>
                 <Link to="/contact" data-testid="footer-contact" className="hover:text-brass transition-colors">Contact & Location</Link>
               </li>
             </ul>

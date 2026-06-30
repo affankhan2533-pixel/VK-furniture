@@ -21,6 +21,8 @@ import CustomPlanner from './pages/CustomPlanner';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import Services from './pages/Services';
+import CartCheckout from './pages/CartCheckout';
+import ShippingReturns from './pages/ShippingReturns';
 
 import './App.css';
 
@@ -128,6 +130,8 @@ function App() {
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/custom-planner" element={<CustomPlanner />} />
               <Route path="/services" element={<Services />} />
+              <Route path="/cart" element={<CartCheckout />} />
+              <Route path="/shipping-returns" element={<ShippingReturns />} />
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
             </Routes>
