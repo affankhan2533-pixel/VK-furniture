@@ -50,8 +50,14 @@ const faqAccordions = [
 ];
 
 const Contact = () => {
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
-  const API = `${BACKEND_URL}/api`;
+ const BACKEND_URL =
+  process.env.REACT_APP_BACKEND_URL;
+
+if (!BACKEND_URL) {
+  throw new Error("REACT_APP_BACKEND_URL is not configured.");
+}
+
+const API = `${BACKEND_URL}/api`;
 
   const [formData, setFormData] = useState({
     name: '',
