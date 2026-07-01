@@ -94,7 +94,7 @@ const ShippingReturns = () => {
                 <HelpCircle className="text-teak" size={16} /> How to Initiate a Return or Claim?
               </h4>
               <p className="text-xs">
-                To file a claim or report transit damages, please contact us over call at **098214 54706** or email us at **affankhan2533-pixel@gmail.com** with your order number, photos of the invoice sheet, and detailed images showing the concerns. We resolve claims within 3 working days.
+                To file a claim or report transit damages, please contact us over call at **+91 99306 68406** or email us at **riteshsharma9930@gmail.com** with your order number, photos of the invoice sheet, and detailed images showing the concerns. We resolve claims within 3 working days.
               </p>
             </div>
 

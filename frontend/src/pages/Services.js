@@ -301,7 +301,7 @@ const Services = () => {
                 Estimate Pricing
               </button>
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20inquiring%20about%20your%20services."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20inquiring%20about%20your%20services."
                 target="_blank"
                 rel="noreferrer"
                 className="border border-borderSubtle dark:border-brass/20 text-espresso dark:text-light hover:border-brass dark:hover:border-brass px-8 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-[8px]"
@@ -508,7 +508,7 @@ const Services = () => {
                         Invoice Draft
                       </button>
                       <a
-                        href={`https://wa.me/919821454706?text=Hi%20VK%20Furniture%2C%20I%20calculated%20an%20estimate%20quote%20on%20your%20site%21%0A-%20Type%3A%20${estimate.category}%0A-%20Wood%3A%20${estimate.wood}%0A-%20Foam%3A%20${estimate.foam}%0A-%20Size%3A%20${estimate.width}%20Ft%0A-%20Estimated%20Price%3A%20Rs.%20${estimatedPrice}%0APlease%20confirm%20fabrication%20time%21`}
+                        href={`https://wa.me/919930668406?text=Hi%20VK%20Furniture%2C%20I%20calculated%20an%20estimate%20quote%20on%20your%20site%21%0A-%20Type%3A%20${estimate.category}%0A-%20Wood%3A%20${estimate.wood}%0A-%20Foam%3A%20${estimate.foam}%0A-%20Size%3A%20${estimate.width}%20Ft%0A-%20Estimated%20Price%3A%20Rs.%20${estimatedPrice}%0APlease%20confirm%20fabrication%20time%21`}
                         target="_blank" rel="noreferrer"
                         className="bg-brass text-cream hover:bg-[#977848] py-3 px-6 text-xs font-bold tracking-widest uppercase text-center cursor-pointer w-full sm:w-auto rounded-[8px]"
                       >
@@ -946,7 +946,7 @@ const Services = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white px-8 py-3.5 font-sans text-xs uppercase tracking-widest font-bold hover:bg-[#20ba5a] transition-all duration-300 rounded-[10px] w-full sm:w-auto shadow-md shadow-green-500/10 cursor-pointer"
@@ -955,7 +955,7 @@ const Services = () => {
                 WhatsApp Consultation
               </a>
               <a
-                href="tel:09821454706"
+                href="tel:+919930668406"
                 className="inline-flex items-center justify-center gap-2 border border-white/20 hover:border-white text-white px-8 py-3.5 font-sans text-xs uppercase tracking-widest font-bold hover:bg-white hover:text-[#1A1715] transition-all duration-300 rounded-[10px] w-full sm:w-auto cursor-pointer"
               >
                 <Phone size={15} />
@@ -992,7 +992,7 @@ const Services = () => {
               {/* Header */}
               <div className="text-center border-b-2 border-dashed border-borderSubtle dark:border-brass/10 pb-4">
                 <h3 className="font-serif text-lg font-bold uppercase tracking-wider">V.K. Furniture Showroom</h3>
-                <p className="text-[10px] text-stone dark:text-gray-400 mt-1">Naik Nagar, Dharavi, Mumbai-400070 | Phone: 098214 54706</p>
+                <p className="text-[10px] text-stone dark:text-gray-400 mt-1">Naik Nagar, Dharavi, Mumbai-400070 | Phone: +91 99306 68406</p>
                 <p className="text-[9px] text-stone dark:text-gray-400 mt-0.5">Direct Factory-to-Customer Invoice Sheet</p>
               </div>
 

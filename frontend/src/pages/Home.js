@@ -94,7 +94,7 @@ const Home = () => {
     "@type": ["FurnitureStore", "LocalBusiness"],
     "name": "V.K. Furniture (वी.के. फर्नीचर)",
     "image": "https://vk-furniture.vercel.app/images/workshop.png",
-    "telephone": "098214 54706",
+    "telephone": "+91 99306 68406",
     "url": "https://vk-furniture.vercel.app",
     "address": {
       "@type": "PostalAddress",

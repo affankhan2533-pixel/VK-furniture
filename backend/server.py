@@ -450,7 +450,7 @@ async def create_enquiry(payload: EnquiryCreate, request: Request):
 
         # Send notifications
         # Owner Alert
-        owner_email = os.environ.get('BUSINESS_OWNER_EMAIL', os.environ.get('SMTP_USER', ''))
+        owner_email = os.environ.get('BUSINESS_OWNER_EMAIL', 'riteshsharma9930@gmail.com')
         if owner_email:
             owner_body = f"""
             <h3>New Custom / Wholesale Enquiry Received</h3>
@@ -480,7 +480,7 @@ async def create_enquiry(payload: EnquiryCreate, request: Request):
               <p style="font-style:italic;color:#57534E;">"{enquiry_obj.message}"</p>
               <br/>
               <p>Best Regards,</p>
-              <p><strong>V.K. Furniture Team</strong><br/>Naik Nagar, Dharavi, Mumbai<br/>Contact: 098214 54706</p>
+              <p><strong>V.K. Furniture Team</strong><br/>Naik Nagar, Dharavi, Mumbai<br/>Contact: +91 99306 68406</p>
             </div>
             """
             send_email_notification(enquiry_obj.email, "Enquiry Confirmation - V.K. Furniture", client_body)
@@ -516,7 +516,7 @@ async def create_custom_order(payload: CustomOrderCreate, request: Request):
         logger.info(f"Custom order saved: {order_obj.id} from {order_obj.name}")
 
         # Dispatch email notifications for custom orders
-        owner_email = os.environ.get('BUSINESS_OWNER_EMAIL', os.environ.get('SMTP_USER', ''))
+        owner_email = os.environ.get('BUSINESS_OWNER_EMAIL', 'riteshsharma9930@gmail.com')
         if owner_email:
             owner_body = f"""
             <h3>New Custom Design Plan Received</h3>

@@ -113,7 +113,7 @@ const About = () => {
                 Plan Custom Order
               </Link>
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20discussing%20a%20teak%20furniture%20project."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20discussing%20a%20teak%20furniture%20project."
                 target="_blank"
                 rel="noreferrer"
                 className="border border-borderSubtle dark:border-brass/20 text-espresso dark:text-light hover:border-brass dark:hover:border-brass px-8 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-[8px]"
@@ -359,7 +359,7 @@ const About = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white px-8 py-3.5 font-sans text-xs uppercase tracking-widest font-bold hover:bg-[#20ba5a] transition-all duration-300 rounded-[10px] w-full sm:w-auto shadow-md shadow-green-500/10 cursor-pointer"
@@ -368,7 +368,7 @@ const About = () => {
                 WhatsApp Consultation
               </a>
               <a
-                href="tel:09821454706"
+                href="tel:+919930668406"
                 className="inline-flex items-center justify-center gap-2 border border-white/20 hover:border-white text-white px-8 py-3.5 font-sans text-xs uppercase tracking-widest font-bold hover:bg-white hover:text-[#1A1715] transition-all duration-300 rounded-[10px] w-full sm:w-auto cursor-pointer"
               >
                 <Phone size={15} />

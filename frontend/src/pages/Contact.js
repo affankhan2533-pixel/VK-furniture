@@ -145,7 +145,7 @@ const API = `${BACKEND_URL}/api`;
     directions: "https://www.google.com/maps/dir/?api=1&destination=V.K.+Furniture+Dharavi+Mumbai&destination_place_id=ChIJF1UO-ivJ5zsRj8alT50kTeU",
     navigation: "https://www.google.com/maps/search/?api=1&query=V.K.+Furniture+Dharavi+Mumbai&query_place_id=ChIJF1UO-ivJ5zsRj8alT50kTeU",
     reviews: "https://www.google.com/maps?cid=16522851918342407823",
-    call: "tel:09821454706"
+    call: "tel:+919930668406"
   };
 
   const scrollToForm = () => {
@@ -211,13 +211,13 @@ const API = `${BACKEND_URL}/api`;
             </p>
             <div className="pt-2 flex flex-wrap gap-4">
               <a
-                href="tel:09821454706"
+                href="tel:+919930668406"
                 className="bg-brass text-white hover:bg-[#977848] px-8 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-[8px] cursor-pointer shadow-md shadow-brass/20"
               >
                 Call Now
               </a>
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
                 target="_blank"
                 rel="noreferrer"
                 className="border border-borderSubtle dark:border-brass/20 text-espresso dark:text-light hover:border-brass dark:hover:border-brass px-8 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-[8px]"
@@ -274,8 +274,8 @@ const API = `${BACKEND_URL}/api`;
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             { title: "Workshop Address", detail: "Munna seth compound, Lal Bahadur Shastri Marg, near by Himalaya refrigerator, Naik Nagar, Dharavi, Mumbai, Maharashtra 400070", icon: MapPin },
-            { title: "Phone Number", detail: "098214 54706", icon: Phone, isLink: true, link: "tel:09821454706" },
-            { title: "Email Address", detail: "vkfurnituremumbai@gmail.com", icon: Mail, isLink: true, link: "mailto:vkfurnituremumbai@gmail.com" },
+            { title: "Phone Number", detail: "+91 99306 68406", icon: Phone, isLink: true, link: "tel:+919930668406" },
+            { title: "Email Address", detail: "riteshsharma9930@gmail.com", icon: Mail, isLink: true, link: "mailto:riteshsharma9930@gmail.com" },
             { title: "Working Hours", detail: "Open 24 hours, 7 Days a week (Showroom and Factory)", icon: Clock }
           ].map((item, idx) => {
             const InfoIcon = item.icon;
@@ -582,7 +582,7 @@ const API = `${BACKEND_URL}/api`;
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20building%20some%20custom%20hardwood%20furniture."
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white px-8 py-3.5 font-sans text-xs uppercase tracking-widest font-bold hover:bg-[#20ba5a] transition-all duration-300 rounded-[10px] w-full sm:w-auto shadow-md shadow-green-500/10 cursor-pointer"
@@ -591,7 +591,7 @@ const API = `${BACKEND_URL}/api`;
                 WhatsApp Consultation
               </a>
               <a
-                href="tel:09821454706"
+                href="tel:+919930668406"
                 className="inline-flex items-center justify-center gap-2 border border-white/20 hover:border-white text-white px-8 py-3.5 font-sans text-xs uppercase tracking-widest font-bold hover:bg-white hover:text-[#1A1715] transition-all duration-300 rounded-[10px] w-full sm:w-auto cursor-pointer"
               >
                 <Phone size={15} />

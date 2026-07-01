@@ -44,7 +44,7 @@ Page: ${pageName}
 
 Please contact me.`;
 
-    return `https://wa.me/919821454706?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/919930668406?text=${encodeURIComponent(text)}`;
   };
 
   return (

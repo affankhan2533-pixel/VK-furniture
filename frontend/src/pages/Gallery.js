@@ -271,7 +271,7 @@ const Gallery = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
-              href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20a%20custom%20furniture%20consultation."
+              href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20a%20custom%20furniture%20consultation."
               target="_blank"
               rel="noreferrer"
               data-testid="gallery-whatsapp-cta"
@@ -324,7 +324,7 @@ const Gallery = () => {
                   </Link>
                 )}
                 <a
-                  href={`https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20${encodeURIComponent(lightboxImg.label)}`}
+                  href={`https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20${encodeURIComponent(lightboxImg.label)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="bg-[#25D366] text-white px-5 py-2.5 text-xs uppercase tracking-wider font-bold hover:bg-[#20ba5a] rounded-[8px] transition-colors flex items-center justify-center gap-1.5"

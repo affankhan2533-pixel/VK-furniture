@@ -308,7 +308,7 @@ const Catalog = () => {
                         View Specs
                       </Link>
                       <a
-                        href={`https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20enquiring%20about%20"${encodeURIComponent(product.name)}".`}
+                        href={`https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20enquiring%20about%20"${encodeURIComponent(product.name)}".`}
                         target="_blank"
                         rel="noreferrer"
                         data-testid={`enquire-whatsapp-${product.id}`}

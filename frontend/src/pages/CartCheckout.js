@@ -177,7 +177,7 @@ const CartCheckout = () => {
             <div id="ecommerce-receipt" className="border border-dashed border-borderSubtle p-6 bg-parchment/30 text-left font-mono text-xs space-y-4">
               <div className="text-center border-b border-dashed border-borderSubtle pb-3">
                 <h4 className="font-serif font-bold text-sm">V.K. Furniture Showroom</h4>
-                <span className="text-[10px] text-stone">Dharavi, L.B.S Marg, Mumbai | 098214 54706</span>
+                <span className="text-[10px] text-stone">Dharavi, L.B.S Marg, Mumbai | +91 99306 68406</span>
               </div>
               <div className="space-y-1 text-stone-700">
                 <div>Client: {placedOrder.name}</div>

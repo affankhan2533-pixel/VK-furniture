@@ -348,7 +348,7 @@ const ProductDetail = () => {
   };
 
   const queryText = `Hi V.K. Furniture, I am interested in details and pricing for "${product.name}" (ID: ${product.id}). Can you please share the lead times and custom specifications?`;
-  const whatsappUrl = `https://wa.me/919821454706?text=${encodeURIComponent(queryText)}`;
+  const whatsappUrl = `https://wa.me/919930668406?text=${encodeURIComponent(queryText)}`;
 
   const relatedProducts = productsData
     .filter(p => p.category === product.category && p.id !== product.id)
@@ -908,7 +908,7 @@ const ProductDetail = () => {
                   <input
                     type="tel"
                     required
-                    placeholder="e.g. 098214 54706"
+                    placeholder="e.g. +91 99306 68406"
                     value={quoteFormData.phone}
                     onChange={(e) => setQuoteFormData({ ...quoteFormData, phone: e.target.value })}
                     className="w-full px-4 py-3 bg-cream/40 border border-borderSubtle font-sans text-sm focus:outline-none focus:border-primary text-[#2B2B2B] dark:text-[#F7F3EC] rounded-[10px]"

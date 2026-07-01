@@ -71,7 +71,7 @@ const CustomPlanner = () => {
 📝 Special Notes: ${savedOrder.notes || 'None'}
 
 Please let me know the estimated cost and time to fabricate this design!`;
-    return `https://wa.me/919821454706?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/919930668406?text=${encodeURIComponent(text)}`;
   };
 
   const scrollToForm = () => {
@@ -107,7 +107,7 @@ Please let me know the estimated cost and time to fabricate this design!`;
                 Start Designing
               </button>
               <a
-                href="https://wa.me/919821454706?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20discussing%20a%20custom%20design."
+                href="https://wa.me/919930668406?text=Hi%20V.K.%20Furniture%2C%20I%20am%20interested%20in%20discussing%20a%20custom%20design."
                 target="_blank"
                 rel="noreferrer"
                 className="border border-borderSubtle dark:border-brass/20 text-espresso dark:text-light hover:border-brass dark:hover:border-brass px-8 py-3.5 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-[8px]"
@@ -370,7 +370,7 @@ Please let me know the estimated cost and time to fabricate this design!`;
                         type="tel"
                         id="phone"
                         name="phone"
-                        placeholder="e.g. 098214 54706"
+                        placeholder="e.g. +91 99306 68406"
                         value={formData.phone}
                         onChange={handleChange}
                         data-testid="planner-phone-input"
@@ -429,7 +429,7 @@ Please let me know the estimated cost and time to fabricate this design!`;
                 Need advice on wood grains or dimensions? Call us directly:
               </p>
               <p className="font-serif text-xl font-bold text-teak mt-1">
-                098214 54706
+                +91 99306 68406
               </p>
             </div>
           </div>
