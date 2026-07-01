@@ -20,6 +20,13 @@ export const Products = () => {
   const { searchVal } = useOutletContext() || { searchVal: '' };
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const getImageUrl = (path) => {
+    if (!path) return '/images/placeholder.png';
+    if (path.startsWith('http') || path.startsWith('data:') || path.startsWith('blob:')) return path;
+    const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+    return `${baseUrl.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+  };
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -36,9 +43,13 @@ export const Products = () => {
     image: '',
     description: '',
     stock: 5,
+    dimensions: '',
+    featured: false,
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const [uploadFile, setUploadFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
   const [specsList, setSpecsList] = useState([{ key: '', value: '' }]);
 
   useEffect(() => {
@@ -75,7 +86,7 @@ export const Products = () => {
     }
   };
 
-  // Convert image upload to base64
+  // Convert image upload file selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -85,12 +96,9 @@ export const Products = () => {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData((prev) => ({ ...prev, image: reader.result }));
-      toast.success('Image loaded successfully');
-    };
-    reader.readAsDataURL(file);
+    setUploadFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    toast.success('Image selected successfully');
   };
 
   // Specs helpers
@@ -114,6 +122,8 @@ export const Products = () => {
 
   const openAddModal = () => {
     setFormData(initialFormState);
+    setUploadFile(null);
+    setPreviewUrl('');
     setSpecsList([{ key: '', value: '' }]);
     setIsEditing(false);
     setModalOpen(true);
@@ -128,6 +138,8 @@ export const Products = () => {
       image: product.image,
       description: product.description,
       stock: product.stock || 5,
+      dimensions: product.dimensions || product.specs?.Dimensions || '',
+      featured: product.featured || false,
     });
 
     const specsArr = Object.entries(product.specs || {}).map(([k, v]) => ({
@@ -135,7 +147,8 @@ export const Products = () => {
       value: v,
     }));
     setSpecsList(specsArr.length > 0 ? specsArr : [{ key: '', value: '' }]);
-
+    setUploadFile(null);
+    setPreviewUrl(product.image || '');
     setIsEditing(true);
     setEditingPid(product.id);
     setModalOpen(true);
@@ -144,23 +157,26 @@ export const Products = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.image) {
-      toast.error('Please upload an image or provide an image link');
+    if (!previewUrl && !formData.image) {
+      toast.error('Please upload an image file');
       return;
     }
 
-    // compile specs
-    const specs = {};
-    specsList.forEach((s) => {
-      if (s.key.trim() && s.value.trim()) {
-        specs[s.key.trim()] = s.value.trim();
-      }
-    });
+    const payload = new FormData();
+    payload.append('name', formData.name);
+    payload.append('category', formData.category);
+    payload.append('price', formData.price);
+    payload.append('material', formData.material);
+    payload.append('description', formData.description);
+    payload.append('dimensions', formData.dimensions);
+    payload.append('stock', formData.stock);
+    payload.append('featured', formData.featured);
 
-    const payload = {
-      ...formData,
-      specs,
-    };
+    if (uploadFile) {
+      payload.append('image', uploadFile);
+    } else {
+      payload.append('existing_image', formData.image);
+    }
 
     const actionToast = toast.loading(isEditing ? 'Updating item...' : 'Seeding item to catalog...');
     try {
@@ -175,7 +191,7 @@ export const Products = () => {
       loadProducts();
     } catch (err) {
       console.error(err);
-      toast.error('Catalog operation failed.', { id: actionToast });
+      toast.error(err.response?.data?.detail || 'Catalog operation failed.', { id: actionToast });
     }
   };
 
@@ -256,7 +272,7 @@ export const Products = () => {
               {/* Product Image */}
               <div className="relative aspect-[16/11] overflow-hidden bg-black/40 border-b border-[#B08D57]/10">
                 <img 
-                  src={prod.image.startsWith('data:') ? prod.image : prod.image} 
+                  src={getImageUrl(prod.image)} 
                   alt={prod.name} 
                   className="w-full h-full object-cover"
                 />
@@ -409,6 +425,33 @@ export const Products = () => {
                   />
                 </div>
 
+                {/* Dimensions */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-white/40 text-[10px] uppercase tracking-widest font-mono font-bold">Dimensions</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={formData.dimensions}
+                    onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
+                    placeholder="e.g. 78&quot; W x 32&quot; D x 36&quot; H"
+                    className="bg-[#0A0D16] border border-white/5 rounded-xl py-2.5 px-3.5 text-xs text-white placeholder-white/10 transition-all font-mono"
+                  />
+                </div>
+
+                {/* Featured Toggle */}
+                <div className="flex flex-col gap-1.5 justify-center">
+                  <label className="text-white/40 text-[10px] uppercase tracking-widest font-mono font-bold">Featured Status</label>
+                  <label className="flex items-center gap-3 bg-[#0A0D16] border border-white/5 hover:border-[#B08D57]/20 rounded-xl px-4 py-2.5 cursor-pointer select-none transition-all">
+                    <input 
+                      type="checkbox"
+                      checked={formData.featured}
+                      onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                      className="rounded border border-white/10 bg-[#070910] text-[#B08D57] focus:ring-0 focus:ring-offset-0 w-4 h-4 cursor-pointer accent-[#B08D57]"
+                    />
+                    <span className="text-xs text-white/70">Show on Home Page Showcase</span>
+                  </label>
+                </div>
+
                 {/* Material */}
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <label className="text-white/40 text-[10px] uppercase tracking-widest font-mono font-bold flex items-center gap-1">
@@ -457,16 +500,20 @@ export const Products = () => {
                     </div>
                   </div>
 
-                  {formData.image && (
+                  {(previewUrl || formData.image) && (
                     <div className="mt-3 flex items-center gap-3 bg-[#0A0D16] p-2.5 border border-white/5 rounded-xl">
-                      <img src={formData.image} alt="Preview" className="w-14 h-10 object-cover rounded" />
+                      <img src={getImageUrl(previewUrl || formData.image)} alt="Preview" className="w-14 h-10 object-cover rounded" />
                       <div className="flex-1 truncate">
                         <p className="text-[9px] uppercase tracking-wider text-[#D4AF75] font-bold">Thumbnail Preview</p>
-                        <p className="text-[10px] text-white/30 font-mono truncate">{formData.image}</p>
+                        <p className="text-[10px] text-white/30 font-mono truncate">{previewUrl || formData.image}</p>
                       </div>
                       <button 
                         type="button" 
-                        onClick={() => setFormData({ ...formData, image: '' })}
+                        onClick={() => {
+                          setUploadFile(null);
+                          setPreviewUrl('');
+                          setFormData({ ...formData, image: '' });
+                        }}
                         className="text-[9px] uppercase font-mono px-2 py-1 bg-red-500/10 text-red-400 hover:text-white border border-red-500/20 rounded-md cursor-pointer"
                       >
                         Clear

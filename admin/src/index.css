@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+:root {
+  --vk-gold-accent: #B08D57;
+  --vk-gold-light: #D4AF75;
+  --vk-gold-accent-rgb: 176, 141, 87;
+}
+
 html,
 body,
 #root {
@@ -12,7 +18,7 @@ body,
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #B08D57 #1A1F2E;
+  scrollbar-color: var(--vk-gold-accent) #1A1F2E;
 }
 
 *::-webkit-scrollbar {
@@ -25,12 +31,12 @@ body,
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #B08D57;
+  background: var(--vk-gold-accent);
   border-radius: 3px;
 }
 
 .gold-gradient {
-  background: linear-gradient(135deg, #B08D57 0%, #D4AF75 50%, #B08D57 100%);
+  background: linear-gradient(135deg, var(--vk-gold-accent) 0%, var(--vk-gold-light) 50%, var(--vk-gold-accent) 100%);
 }
 
 .sidebar-link {
@@ -38,14 +44,14 @@ body,
 }
 
 .sidebar-link:hover {
-  background: rgba(176, 141, 87, 0.1);
-  color: #D4AF75;
+  background: rgba(var(--vk-gold-accent-rgb), 0.1);
+  color: var(--vk-gold-light);
 }
 
 .sidebar-link.active {
-  background: rgba(176, 141, 87, 0.15);
-  color: #D4AF75;
-  border-left: 3px solid #B08D57;
+  background: rgba(var(--vk-gold-accent-rgb), 0.15);
+  color: var(--vk-gold-light);
+  border-left: 3px solid var(--vk-gold-accent);
 }
 
 .card-hover {
@@ -54,17 +60,17 @@ body,
 
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(176, 141, 87, 0.15);
+  box-shadow: 0 8px 32px rgba(var(--vk-gold-accent-rgb), 0.15);
 }
 
 .table-row-hover:hover {
-  background: rgba(176, 141, 87, 0.05);
+  background: rgba(var(--vk-gold-accent-rgb), 0.05);
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: #B08D57 !important;
-  box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.2);
+  border-color: var(--vk-gold-accent) !important;
+  box-shadow: 0 0 0 2px rgba(var(--vk-gold-accent-rgb), 0.2);
 }
 
 .status-badge {
@@ -76,4 +82,58 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+/* Dynamic CSS class overrides to dynamically remap Tailwind statically-built utility selectors */
+.bg-\[\#B08D57\], .bg-\[\#b08d57\] {
+  background-color: var(--vk-gold-accent) !important;
+}
+.text-\[\#B08D57\], .text-\[\#b08d57\] {
+  color: var(--vk-gold-accent) !important;
+}
+.text-\[\#D4AF75\], .text-\[\#d4af75\] {
+  color: var(--vk-gold-light) !important;
+}
+.border-\[\#B08D57\], .border-\[\#b08d57\] {
+  border-color: var(--vk-gold-accent) !important;
+}
+.border-\[\#B08D57\]\/10, .border-\[\#b08d57\]\/10 {
+  border-color: rgba(var(--vk-gold-accent-rgb), 0.1) !important;
+}
+.border-\[\#B08D57\]\/15, .border-\[\#b08d57\]\/15 {
+  border-color: rgba(var(--vk-gold-accent-rgb), 0.15) !important;
+}
+.border-\[\#B08D57\]\/20, .border-\[\#b08d57\]\/20 {
+  border-color: rgba(var(--vk-gold-accent-rgb), 0.2) !important;
+}
+.border-\[\#B08D57\]\/25, .border-\[\#b08d57\]\/25 {
+  border-color: rgba(var(--vk-gold-accent-rgb), 0.25) !important;
+}
+.hover\:border-\[\#B08D57\]\/35:hover, .hover\:border-\[\#b08d57\]\/35:hover {
+  border-color: rgba(var(--vk-gold-accent-rgb), 0.35) !important;
+}
+.bg-\[\#B08D57\]\/10, .bg-\[\#b08d57\]\/10 {
+  background-color: rgba(var(--vk-gold-accent-rgb), 0.1) !important;
+}
+.bg-\[\#B08D57\]\/20, .bg-\[\#b08d57\]\/20 {
+  background-color: rgba(var(--vk-gold-accent-rgb), 0.2) !important;
+}
+.hover\:bg-\[\#B08D57\]\/20:hover, .hover\:bg-\[\#b08d57\]\/20:hover {
+  background-color: rgba(var(--vk-gold-accent-rgb), 0.2) !important;
+}
+.from-\[\#B08D57\], .from-\[\#b08d57\] {
+  --tw-gradient-from: var(--vk-gold-accent) !important;
+  --tw-gradient-stops: var(--vk-gold-accent), var(--tw-gradient-to, rgba(var(--vk-gold-accent-rgb), 0)) !important;
+}
+.to-\[\#D4AF75\], .to-\[\#d4af75\] {
+  --tw-gradient-to: var(--vk-gold-light) !important;
+}
+.shadow-\[0_0_20px_rgba\(176\,141\,87\,0\.25\)\] {
+  box-shadow: 0 0 20px rgba(var(--vk-gold-accent-rgb), 0.25) !important;
+}
+.shadow-\[0_0_20px_rgba\(176\,141\,87\,0\.3\)\] {
+  box-shadow: 0 0 20px rgba(var(--vk-gold-accent-rgb), 0.3) !important;
+}
+.shadow-\[0_0_80px_rgba\(176\,141\,87\,0\.15\)\] {
+  box-shadow: 0 0 80px rgba(var(--vk-gold-accent-rgb), 0.15) !important;
 }

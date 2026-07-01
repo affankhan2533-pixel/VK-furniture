@@ -13,59 +13,86 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { settingsAPI } from '../utils/api';
+
+const THEMES = {
+  'Royal Gold': { accent: '#B08D57', light: '#D4AF75', rgb: '176, 141, 87' },
+  'Imperial Bronze': { accent: '#CD7F32', light: '#E59F38', rgb: '205, 127, 50' },
+  'Champagne Gold': { accent: '#E3C18F', light: '#F5E6D3', rgb: '227, 193, 143' },
+  'Honey Wood': { accent: '#A0522D', light: '#CD853F', rgb: '160, 82, 45' },
+  'Luxury Rose Gold': { accent: '#B76E79', light: '#E8C4C4', rgb: '183, 110, 121' }
+};
+
+export const applyTheme = (themeName) => {
+  const theme = THEMES[themeName] || THEMES['Royal Gold'];
+  document.documentElement.style.setProperty('--vk-gold-accent', theme.accent);
+  document.documentElement.style.setProperty('--vk-gold-light', theme.light);
+  document.documentElement.style.setProperty('--vk-gold-accent-rgb', theme.rgb);
+};
+
 export const Settings = () => {
   const defaultSettings = {
     businessName: 'V.K. Furniture (वी.के. फर्नीचर)',
     phone: '+91 99306 68406',
     email: 'riteshsharma9930@gmail.com',
     whatsapp: '+91 99306 68406',
-    googleMap: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.5034692736237!2d72.8530366!3d19.0416174!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c8d9df16a7f1%3A0xe54e6fc238ff7a98!2sNaik%20Nagar%20Dharavi!5e0!3m2!1sen!2sin!4v1700000000000',
-    facebook: 'https://www.facebook.com/vkfurniture',
-    instagram: 'https://www.instagram.com/official_vk_furniture',
-    youtube: 'https://www.youtube.com/c/vkfurniture',
-    accentColor: '#B08D57',
+    googleMap: '',
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    selectedTheme: 'Royal Gold',
   };
 
   const [settings, setSettings] = useState(defaultSettings);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('vk_admin_settings');
-    if (saved) {
-      try {
-        setSettings(JSON.parse(saved));
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    setLoading(true);
+    try {
+      const data = await settingsAPI.get();
+      setSettings(data);
+      if (data.selectedTheme) {
+        applyTheme(data.selectedTheme);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not load configuration settings from backend.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (field, value) => {
     setSettings((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const saveToast = toast.loading('Saving business profiles to workspace storage...');
-    setTimeout(() => {
-      localStorage.setItem('vk_admin_settings', JSON.stringify(settings));
-      
-      // Optionally update root custom css properties if we want to change accents dynamically
-      document.documentElement.style.setProperty('--vk-gold-accent', settings.accentColor);
-      
+    const saveToast = toast.loading('Synchronizing configuration changes...');
+    try {
+      await settingsAPI.update(settings);
+      applyTheme(settings.selectedTheme);
       toast.success('Settings synchronized successfully', { id: saveToast });
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.detail || 'Could not save configurations.', { id: saveToast });
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   const accents = [
-    { name: 'Royal Gold (Sagwan)', value: '#B08D57' },
-    { name: 'Imperial Bronze', value: '#CD7F32' },
-    { name: 'Champagne Gold', value: '#E3C18F' },
-    { name: 'Honey Wood Polish', value: '#A0522D' },
-    { name: 'Luxury Rose Gold', value: '#B76E79' },
+    { name: 'Royal Gold', value: '#B08D57', label: 'Royal Gold (Sagwan)' },
+    { name: 'Imperial Bronze', value: '#CD7F32', label: 'Imperial Bronze' },
+    { name: 'Champagne Gold', value: '#E3C18F', label: 'Champagne Gold' },
+    { name: 'Honey Wood', value: '#A0522D', label: 'Honey Wood Polish' },
+    { name: 'Luxury Rose Gold', value: '#B76E79', label: 'Luxury Rose Gold' },
   ];
 
   return (
@@ -219,20 +246,20 @@ export const Settings = () => {
             <label className="text-white/40 text-[10px] uppercase tracking-widest font-mono font-bold block">Gold Accent Selection</label>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
               {accents.map((acc) => {
-                const selected = settings.accentColor === acc.value;
+                const selected = settings.selectedTheme === acc.name;
                 return (
                   <button
-                    key={acc.value}
+                    key={acc.name}
                     type="button"
-                    onClick={() => handleChange('accentColor', acc.value)}
+                    onClick={() => handleChange('selectedTheme', acc.name)}
                     className={`flex items-center gap-3 p-3 rounded-xl border text-left cursor-pointer transition-all ${
                       selected 
-                        ? 'bg-[#B08D57]/10 border-[#B08D57] text-white shadow-[0_0_15px_rgba(176,141,87,0.15)]' 
+                        ? 'bg-[var(--vk-gold-accent)]/10 border-[var(--vk-gold-accent)] text-white shadow-[0_0_15px_rgba(var(--vk-gold-accent-rgb),0.15)]' 
                         : 'bg-[#0A0D16] border-white/5 text-white/50 hover:border-white/10'
                     }`}
                   >
                     <span className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: acc.value }} />
-                    <span className="text-[11px] font-semibold tracking-wide uppercase">{acc.name}</span>
+                    <span className="text-[11px] font-semibold tracking-wide uppercase">{acc.label}</span>
                   </button>
                 );
               })}

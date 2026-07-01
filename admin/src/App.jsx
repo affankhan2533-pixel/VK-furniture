@@ -83,20 +83,37 @@ const WorkspaceLayout = () => {
   );
 };
 
+import axios from 'axios';
+
+const THEMES = {
+  'Royal Gold': { accent: '#B08D57', light: '#D4AF75', rgb: '176, 141, 87' },
+  'Imperial Bronze': { accent: '#CD7F32', light: '#E59F38', rgb: '205, 127, 50' },
+  'Champagne Gold': { accent: '#E3C18F', light: '#F5E6D3', rgb: '227, 193, 143' },
+  'Honey Wood': { accent: '#A0522D', light: '#CD853F', rgb: '160, 82, 45' },
+  'Luxury Rose Gold': { accent: '#B76E79', light: '#E8C4C4', rgb: '183, 110, 121' }
+};
+
+const applyTheme = (themeName) => {
+  const theme = THEMES[themeName] || THEMES['Royal Gold'];
+  document.documentElement.style.setProperty('--vk-gold-accent', theme.accent);
+  document.documentElement.style.setProperty('--vk-gold-light', theme.light);
+  document.documentElement.style.setProperty('--vk-gold-accent-rgb', theme.rgb);
+};
+
 export const App = () => {
-  // Read theme color from localStorage and apply to document element
   useEffect(() => {
-    const saved = localStorage.getItem('vk_admin_settings');
-    if (saved) {
+    const loadTheme = async () => {
       try {
-        const settings = JSON.parse(saved);
-        if (settings.accentColor) {
-          document.documentElement.style.setProperty('--vk-gold-accent', settings.accentColor);
+        const baseUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+        const response = await axios.get(`${baseUrl.replace(/\/$/, '')}/api/public/settings`);
+        if (response.data && response.data.selectedTheme) {
+          applyTheme(response.data.selectedTheme);
         }
       } catch (err) {
-        console.error(err);
+        console.error("Could not load backend theme settings:", err);
       }
-    }
+    };
+    loadTheme();
   }, []);
 
   return (
