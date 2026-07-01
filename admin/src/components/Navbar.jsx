@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Menu, Search, Bell, User, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { authAPI } from '../utils/api';
+
 export const Navbar = ({ toggleSidebar, searchVal, setSearchVal }) => {
   const navigate = useNavigate();
   const [profileOpen, setProfileOpen] = useState(false);
@@ -9,16 +11,24 @@ export const Navbar = ({ toggleSidebar, searchVal, setSearchVal }) => {
   const [adminName, setAdminName] = useState('Admin Ritesh');
 
   useEffect(() => {
-    const user = localStorage.getItem('vk_admin_user');
+    const user = localStorage.getItem('vk_admin_user') || sessionStorage.getItem('vk_admin_user');
     if (user) {
       setAdminName(user);
     }
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout();
+    } catch (err) {
+      console.error(err);
+    }
     localStorage.removeItem('vk_admin_token');
+    localStorage.removeItem('vk_admin_refresh_token');
     localStorage.removeItem('vk_admin_user');
-    sessionStorage.removeItem('vk_admin_authenticated');
+    sessionStorage.removeItem('vk_admin_token');
+    sessionStorage.removeItem('vk_admin_refresh_token');
+    sessionStorage.removeItem('vk_admin_user');
     navigate('/login');
   };
 

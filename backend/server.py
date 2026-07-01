@@ -4,13 +4,13 @@ import logging
 import uuid
 import smtplib
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from collections import defaultdict
 
-from fastapi import FastAPI, APIRouter, HTTPException, status, Request
+from fastapi import FastAPI, APIRouter, HTTPException, status, Request, Depends
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -211,6 +211,19 @@ async def lifespan(app: FastAPI):
         if await db.gallery.count_documents({}) == 0:
             logger.info("Database is empty. Seeding initial gallery items data...")
             await db.gallery.insert_many(INITIAL_GALLERY)
+
+        # Seed default super admin user
+        if await db.admins.count_documents({"email": "admin@vkfurniture.in"}) == 0:
+            logger.info("Seeding default super admin user...")
+            import bcrypt
+            hashed_pass = bcrypt.hashpw("VKFurniture@2026".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            await db.admins.insert_one({
+                "email": "admin@vkfurniture.in",
+                "password": hashed_pass,
+                "role": "super_admin",
+                "name": "Admin Ritesh",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
     except Exception as e:
         logger.error(f"Error seeding database: {e}")
 
@@ -357,8 +370,11 @@ class CustomOrderCreate(BaseModel):
 
 # Pydantic Schemas for new CRUD and Admin Dashboard support
 class AdminLoginRequest(BaseModel):
-    username: str
+    email: str
     password: str
+
+class TokenRefreshRequest(BaseModel):
+    refreshToken: str
 
 class ProductDb(BaseModel):
     id: str
@@ -408,6 +424,63 @@ class AppointmentCreate(BaseModel):
     date: str
     time: str
     notes: Optional[str] = None
+
+# ── JWT & Authentication Helpers ──────────────────────────────────────────────
+JWT_SECRET = os.environ.get("JWT_SECRET", "super-secret-vk-furniture-key-9988")
+JWT_ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+REFRESH_TOKEN_EXPIRE_DAYS = 7
+
+def create_access_token(email: str, role: str) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode = {"sub": email, "role": role, "exp": expire}
+    return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def create_refresh_token(email: str) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode = {"sub": email, "type": "refresh", "exp": expire}
+    return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+def verify_token(token: str) -> dict:
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session token signature has expired."
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session token is invalid or malformed."
+        )
+
+async def get_current_admin(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authorization credentials missing."
+        )
+    token = auth_header.split(" ")[1]
+    payload = verify_token(token)
+    
+    email = payload.get("sub")
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token subject identifier invalid."
+        )
+        
+    admin = await db.admins.find_one({"email": email})
+    if not admin:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Workstation administrator account not found."
+        )
+        
+    return admin
 
 # ── Routes ────────────────────────────────────────────────────────────────────
 @api_router.get("/")
@@ -560,7 +633,7 @@ async def get_product(pid: str):
     return p
 
 @api_router.post("/products", response_model=ProductDb, status_code=201)
-async def create_product(payload: ProductCreate):
+async def create_product(payload: ProductCreate, admin: dict = Depends(get_current_admin)):
     pid = payload.name.lower().replace(" ", "-")
     # check collision
     collision = await db.products.find_one({"id": pid})
@@ -576,7 +649,7 @@ async def create_product(payload: ProductCreate):
     return product_dict
 
 @api_router.put("/products/{pid}", response_model=ProductDb)
-async def update_product(pid: str, payload: ProductCreate):
+async def update_product(pid: str, payload: ProductCreate, admin: dict = Depends(get_current_admin)):
     p = await db.products.find_one({"id": pid})
     if not p:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -588,7 +661,7 @@ async def update_product(pid: str, payload: ProductCreate):
     return update_data
 
 @api_router.delete("/products/{pid}")
-async def delete_product(pid: str):
+async def delete_product(pid: str, admin: dict = Depends(get_current_admin)):
     res = await db.products.delete_one({"id": pid})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -605,7 +678,7 @@ async def get_gallery():
     return results
 
 @api_router.post("/gallery", response_model=GalleryItemDb, status_code=201)
-async def create_gallery_item(payload: GalleryItemCreate):
+async def create_gallery_item(payload: GalleryItemCreate, admin: dict = Depends(get_current_admin)):
     gid = f"g-{str(uuid.uuid4())[:8]}"
     item_dict = payload.model_dump()
     item_dict["id"] = gid
@@ -616,7 +689,7 @@ async def create_gallery_item(payload: GalleryItemCreate):
     return item_dict
 
 @api_router.delete("/gallery/{gid}")
-async def delete_gallery_item(gid: str):
+async def delete_gallery_item(gid: str, admin: dict = Depends(get_current_admin)):
     res = await db.gallery.delete_one({"id": gid})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Gallery item not found")
@@ -637,23 +710,91 @@ async def track_visit(payload: TrackVisitRequest, request: Request):
 # ── Secure Admin Login Endpoint ──────────────────────────────────────────────
 @api_router.post("/admin/login")
 async def admin_login(payload: AdminLoginRequest):
-    admin_user = os.environ.get("ADMIN_USERNAME", "admin")
-    admin_pass = os.environ.get("ADMIN_PASSWORD", "admin123")
+    email = payload.email.lower().strip()
+    admin = await db.admins.find_one({"email": email})
     
-    if payload.username == admin_user and payload.password == admin_pass:
+    if not admin:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Email or Password"
+        )
+        
+    # Verify hashed password using bcrypt
+    try:
+        password_bytes = payload.password.encode('utf-8')
+        hashed_bytes = admin["password"].encode('utf-8')
+        if not bcrypt.checkpw(password_bytes, hashed_bytes):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid Email or Password"
+            )
+    except Exception as e:
+        logger.error(f"Authentication hashing failure: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Email or Password"
+        )
+        
+    # Generate JWT tokens
+    access_token = create_access_token(email, admin.get("role", "admin"))
+    refresh_token = create_refresh_token(email)
+    
+    return {
+        "token": access_token,
+        "refreshToken": refresh_token,
+        "role": admin.get("role", "admin"),
+        "email": admin.get("email"),
+        "name": admin.get("name", "Admin User"),
+        "message": "Login successful"
+    }
+
+@api_router.post("/admin/refresh")
+async def admin_token_refresh(payload: TokenRefreshRequest):
+    try:
+        token_payload = jwt.decode(payload.refreshToken, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if token_payload.get("type") != "refresh":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid refresh token type."
+            )
+            
+        email = token_payload.get("sub")
+        admin = await db.admins.find_one({"email": email})
+        if not admin:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Administrator account not found."
+            )
+            
+        access_token = create_access_token(email, admin.get("role", "admin"))
+        refresh_token = create_refresh_token(email)
+        
         return {
-            "token": "vk-admin-session-token-9988",
-            "role": "admin",
-            "message": "Login successful"
+            "token": access_token,
+            "refreshToken": refresh_token,
+            "role": admin.get("role", "admin"),
+            "email": admin.get("email"),
+            "name": admin.get("name", "Admin User")
         }
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid credentials. Please verify username/password."
-    )
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Session has expired. Please authenticate again."
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid session refresh request."
+        )
+
+@api_router.post("/admin/logout")
+async def admin_logout():
+    return {"message": "Matrix session discarded successfully"}
+
 
 # ── Dashboard Statistics Pipeline ─────────────────────────────────────────────
 @api_router.get("/analytics/stats")
-async def get_stats():
+async def get_stats(admin: dict = Depends(get_current_admin)):
     total_views = await db.visits.count_documents({})
     
     # Unique visitors count
@@ -693,7 +834,7 @@ async def get_stats():
 
 # ── Admin Enquiries CRM Management ───────────────────────────────────────────
 @api_router.get("/admin/enquiries")
-async def get_all_enquiries():
+async def get_all_enquiries(admin: dict = Depends(get_current_admin)):
     enqs = await db.enquiries.find({}).to_list(length=200)
     customs = await db.custom_orders.find({}).to_list(length=200)
     
@@ -719,7 +860,7 @@ async def get_all_enquiries():
     return all_leads
 
 @api_router.put("/admin/enquiries/{eid}")
-async def update_enquiry_status(eid: str, payload: EnquiryStatusUpdate):
+async def update_enquiry_status(eid: str, payload: EnquiryStatusUpdate, admin: dict = Depends(get_current_admin)):
     # Try updating standard enquiries first
     res = await db.enquiries.update_one({"id": eid}, {"$set": {"status": payload.status}})
     if res.matched_count == 0:
@@ -731,7 +872,7 @@ async def update_enquiry_status(eid: str, payload: EnquiryStatusUpdate):
     return {"message": "Status updated successfully"}
 
 @api_router.delete("/admin/enquiries/{eid}")
-async def delete_enquiry(eid: str):
+async def delete_enquiry(eid: str, admin: dict = Depends(get_current_admin)):
     res = await db.enquiries.delete_one({"id": eid})
     if res.deleted_count == 0:
         res_custom = await db.custom_orders.delete_one({"id": eid})
@@ -742,7 +883,7 @@ async def delete_enquiry(eid: str):
 
 # ── CRM Customers Aggregate List ─────────────────────────────────────────────
 @api_router.get("/admin/customers")
-async def get_customers():
+async def get_customers(admin: dict = Depends(get_current_admin)):
     enquiries = await db.enquiries.find({}).to_list(1000)
     customs = await db.custom_orders.find({}).to_list(1000)
     
@@ -812,7 +953,7 @@ async def track_order(phone: str):
 
 # ── Admin Dashboard Appointments List ─────────────────────────────────────────
 @api_router.get("/admin/appointments")
-async def get_appointments():
+async def get_appointments(admin: dict = Depends(get_current_admin)):
     cursor = db.appointments.find({})
     results = await cursor.to_list(length=100)
     for r in results:
@@ -820,7 +961,7 @@ async def get_appointments():
     return results
 
 @api_router.delete("/admin/appointments/{aid}")
-async def delete_appointment(aid: str):
+async def delete_appointment(aid: str, admin: dict = Depends(get_current_admin)):
     res = await db.appointments.delete_one({"id": aid})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Appointment slot not found")
@@ -959,7 +1100,7 @@ async def create_order(payload: OrderCreate):
 
 # ── Admin Dashboard Orders list ───────────────────────────────────────────────
 @api_router.get("/admin/orders")
-async def get_orders():
+async def get_orders(admin: dict = Depends(get_current_admin)):
     cursor = db.orders.find({})
     results = await cursor.to_list(length=100)
     for r in results:
@@ -971,7 +1112,7 @@ class OrderStepUpdate(BaseModel):
     step: int
 
 @api_router.put("/admin/orders/{oid}")
-async def update_order_step(oid: str, payload: OrderStepUpdate):
+async def update_order_step(oid: str, payload: OrderStepUpdate, admin: dict = Depends(get_current_admin)):
     res = await db.orders.update_one(
         {"id": oid}, 
         {"$set": {"status": payload.status, "step": payload.step}}
@@ -980,8 +1121,8 @@ async def update_order_step(oid: str, payload: OrderStepUpdate):
         raise HTTPException(status_code=404, detail="Order not found")
     return {"message": "Order tracking status updated successfully"}
 
-@api_router.delete("/admin/orders/{oid}")
-async def delete_order(oid: str):
+@api_router.delete("/api/admin/orders/{oid}")
+async def delete_order(oid: str, admin: dict = Depends(get_current_admin)):
     res = await db.orders.delete_one({"id": oid})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Order not found")

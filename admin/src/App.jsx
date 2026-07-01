@@ -40,10 +40,9 @@ const ScrollToTop = () => {
 
 // Route Auth Guard
 const RequireAuth = () => {
-  const token = localStorage.getItem('vk_admin_token');
-  const sessionAuth = sessionStorage.getItem('vk_admin_authenticated');
+  const token = localStorage.getItem('vk_admin_token') || sessionStorage.getItem('vk_admin_token');
   
-  if (!token && sessionAuth !== 'true') {
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
   return <Outlet />;

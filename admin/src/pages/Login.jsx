@@ -8,6 +8,7 @@ export const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,41 +19,32 @@ export const Login = () => {
 
     const loginToast = toast.loading('Decrypting master session...');
     
-    // Simulating authentication delay
-    setTimeout(() => {
-      if (email === 'admin@vkfurniture.com' && password === 'admin123') {
-        // Save dummy credentials and token
-        localStorage.setItem('vk_admin_token', 'demo-token-9988');
-        localStorage.setItem('vk_admin_user', 'Admin Ritesh');
-        sessionStorage.setItem('vk_admin_authenticated', 'true');
-        
-        toast.success('Matrix decrypted. Welcome back, Ritesh!', { id: loginToast });
-        setLoading(false);
-        navigate('/dashboard');
-      } else {
-        const msg = 'Invalid Email or Password';
-        setError(msg);
-        toast.error('Authentication Failed', { id: loginToast });
-        setLoading(false);
-      }
-    }, 1000);
-
-    /* 
-    // Kept clean for future FastAPI JWT authentication Integration:
     try {
       const data = await authAPI.login(email, password);
-      localStorage.setItem('vk_admin_token', data.token);
-      localStorage.setItem('vk_admin_user', email);
-      sessionStorage.setItem('vk_admin_authenticated', 'true');
+      
+      const storage = rememberMe ? localStorage : sessionStorage;
+      const oldStorage = rememberMe ? sessionStorage : localStorage;
+      
+      // Clean previous logs
+      oldStorage.removeItem('vk_admin_token');
+      oldStorage.removeItem('vk_admin_refresh_token');
+      oldStorage.removeItem('vk_admin_user');
+      
+      // Set new credentials
+      storage.setItem('vk_admin_token', data.token);
+      storage.setItem('vk_admin_refresh_token', data.refreshToken);
+      storage.setItem('vk_admin_user', data.name || 'Admin Ritesh');
+      
       toast.success('Matrix decrypted. Welcome back, Ritesh!', { id: loginToast });
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Invalid admin credentials. Access Denied.');
-      toast.error('Authentication Failed', { id: loginToast });
+      console.error(err);
+      const msg = err.response?.data?.detail || 'Invalid Email or Password';
+      setError(msg);
+      toast.error(msg, { id: loginToast });
     } finally {
       setLoading(false);
     }
-    */
   };
 
   return (
@@ -121,6 +113,19 @@ export const Login = () => {
                 />
                 <Lock className="absolute left-3.5 top-3.5 w-4 h-4 text-white/20" />
               </div>
+            </div>
+
+            {/* Remember Me Checkbox */}
+            <div className="flex items-center justify-between text-xs select-none">
+              <label className="flex items-center gap-2 text-white/50 hover:text-white cursor-pointer transition-colors">
+                <input 
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="rounded border border-white/10 bg-[#070910] text-[#B08D57] focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5 cursor-pointer accent-[#B08D57]"
+                />
+                <span>Remember Me</span>
+              </label>
             </div>
 
             {/* Submit Action */}

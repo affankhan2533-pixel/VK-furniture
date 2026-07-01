@@ -10,13 +10,23 @@ import {
   X
 } from 'lucide-react';
 
+import { authAPI } from '../utils/api';
+
 export const Sidebar = ({ isOpen, toggleSidebar }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout();
+    } catch (err) {
+      console.error(err);
+    }
     localStorage.removeItem('vk_admin_token');
+    localStorage.removeItem('vk_admin_refresh_token');
     localStorage.removeItem('vk_admin_user');
-    sessionStorage.removeItem('vk_admin_authenticated');
+    sessionStorage.removeItem('vk_admin_token');
+    sessionStorage.removeItem('vk_admin_refresh_token');
+    sessionStorage.removeItem('vk_admin_user');
     navigate('/login');
   };
 
