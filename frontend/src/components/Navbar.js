@@ -142,6 +142,7 @@ const Navbar = () => {
                   scrolled ? 'text-white/90 hover:text-primary' : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                 }`}
                 title="View Cart"
+                aria-label="View Cart"
               >
                 <ShoppingBag size={17} />
                 {cartCount > 0 && (
@@ -181,6 +182,7 @@ const Navbar = () => {
                 className={`relative p-3 transition-colors duration-300 ease-in-out ${
                   scrolled ? 'text-white/90 hover:text-primary' : 'text-espresso/90 dark:text-light/90 hover:text-primary'
                 }`}
+                aria-label="View Cart"
               >
                 <ShoppingBag size={18} />
                 {cartCount > 0 && (

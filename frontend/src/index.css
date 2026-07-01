@@ -6,8 +6,9 @@
 :root {
   --primary: #B08D57;
   --primary-dark: #8C6A3F;
-  --dark: #2B2621;
-  --dark-light: #3A3028;
+  --dark: #1A1715;
+  --dark-light: #221E1B;
+  --dark-elevated: #2C2622;
   --light: #F7F3EE;
   --gray: #A19890;
   --white: #FFFFFF;
@@ -209,5 +210,16 @@ body.mobile-menu-open [data-testid="whatsapp-sticky"] {
   pointer-events: none !important;
   transform: scale(0.8) translate3d(0, 20px, 0) !important;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Visible Focus Indicators for Accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(176, 141, 87, 0.25);
 }
 

@@ -23,6 +23,16 @@ const AIChatbot = () => {
     }
   }, [messages, isOpen]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
@@ -66,6 +76,7 @@ const AIChatbot = () => {
           onClick={() => setIsOpen(true)}
           className="bg-espresso hover:bg-teak text-cream p-4 rounded-full shadow-2xl border border-brass flex items-center justify-center transition-all duration-300 transform hover:scale-110 cursor-pointer group"
           title="Open AI Assistant"
+          aria-label="Open AI Assistant Chatbot"
         >
           <MessageSquareCode size={24} className="group-hover:rotate-12 transition-transform" />
           <span className="absolute right-full mr-3 bg-espresso/90 border border-borderSubtle text-cream text-[10px] uppercase tracking-widest font-sans font-bold py-1.5 px-3 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
@@ -92,6 +103,7 @@ const AIChatbot = () => {
             <button
               onClick={() => setIsOpen(false)}
               className="text-stone hover:text-white p-1 cursor-pointer border-none bg-transparent"
+              aria-label="Close AI Chatbot"
             >
               <X size={20} />
             </button>

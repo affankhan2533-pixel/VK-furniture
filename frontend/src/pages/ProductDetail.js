@@ -268,6 +268,17 @@ const ProductDetail = () => {
     fetchProductFromApi();
   }, [id, BACKEND_URL]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowZoom(false);
+        setShowQuoteModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   if (!product) {
     return (
       <div className="bg-cream py-20 text-center">
@@ -343,28 +354,11 @@ const ProductDetail = () => {
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 3);
 
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": product.name,
-    "image": productImages.map(img => img.startsWith('http') ? img : `https://vk-furniture.vercel.app${img}`),
-    "description": product.description,
-    "material": product.material,
-    "category": product.category,
-    "offers": {
-      "@type": "AggregateOffer",
-      "priceCurrency": "INR",
-      "lowPrice": "Wholesale Direct Pricing",
-      "offerCount": 1
-    }
-  };
-
   const woodType = product.material.toLowerCase().includes("teak") || product.material.toLowerCase().includes("sagwan") 
     ? "Genuine Seasoned Teak (Sagwan) Wood" 
     : "Premium Solid Hardwood";
 
   const dimensions = product.specs["Dimensions"] || product.specs["Dimensions (Large)"] || product.specs["Size"] || "Custom Sized to Order";
-
 
   const faqs = [
     { q: "How does delivery work?", a: "We provide expert in-house white-glove delivery across the Mumbai region. Delivery is fully handled by our craftsman staff to avoid handling damage." },
@@ -379,13 +373,67 @@ const ProductDetail = () => {
     { name: "Priya S.", date: "May 2026", text: "Customized our L-shape sofa size to fit our corner window. Fabric options are premium, and white glove delivery was seamless.", rating: 5 }
   ];
 
+  const productGraphSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        "name": product.name,
+        "image": productImages.map(img => img.startsWith('http') ? img : `https://vk-furniture.vercel.app${img}`),
+        "description": product.description,
+        "material": product.material,
+        "category": product.category,
+        "offers": {
+          "@type": "AggregateOffer",
+          "priceCurrency": "INR",
+          "lowPrice": "Wholesale Direct Pricing",
+          "offerCount": 1
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://vk-furniture.vercel.app"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Catalog",
+            "item": "https://vk-furniture.vercel.app/catalog"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": product.name,
+            "item": `https://vk-furniture.vercel.app/product/${product.id}`
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(f => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": f.a
+          }
+        }))
+      }
+    ]
+  };
+
   return (
     <div className="bg-light py-16 text-dark fade-in transition-colors duration-300">
       <SEO
         title={`${product.name} Specs & Custom Pricing | V.K. Furniture`}
         description={`Get detailed dimensions, wood finish types, cushion foam densities, and B2B wholesale pricing for ${product.name}. Handcrafted in premium Sagwan teak.`}
         ogImage={productImages[0]}
-        schema={productSchema}
+        schema={productGraphSchema}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -410,6 +458,7 @@ const ProductDetail = () => {
                   : 'bg-white dark:bg-[#3A3028] border-borderSubtle text-gray-500 hover:text-primary'
               }`}
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+              aria-label={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
             >
               <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />
             </button>
@@ -419,6 +468,7 @@ const ProductDetail = () => {
               data-testid="share-btn"
               className="p-2.5 border bg-white dark:bg-[#3A3028] border-borderSubtle text-gray-500 hover:text-primary transition-all rounded-full cursor-pointer relative min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Share Product"
+              aria-label="Share Product Link"
             >
               <Share2 size={18} />
               {showShareTooltip && (
@@ -434,6 +484,7 @@ const ProductDetail = () => {
               data-testid="download-catalogue-btn"
               className="p-2.5 border bg-white dark:bg-[#3A3028] border-borderSubtle text-gray-500 hover:text-primary transition-all rounded-full cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
               title="Download Catalogue PDF"
+              aria-label="Download Product Catalogue PDF"
             >
               <Download size={18} />
             </a>
@@ -453,6 +504,8 @@ const ProductDetail = () => {
                   src={activeImage}
                   alt={product.name}
                   className="w-full h-full object-cover scale-100 group-hover:scale-[1.05] transition-transform duration-500 ease-out brightness-[1.03]"
+                  fetchPriority="high"
+                  loading="eager"
                 />
               )}
               
@@ -471,6 +524,7 @@ const ProductDetail = () => {
                     data-testid="zoom-btn"
                     className="p-2.5 bg-white text-espresso hover:bg-parchment border border-borderSubtle shadow-md transition-colors rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center"
                     title="Zoom Image"
+                    aria-label="Zoom Product Image"
                   >
                     <Maximize2 size={16} />
                   </button>
@@ -492,7 +546,7 @@ const ProductDetail = () => {
                     activeImage === img && !show3D ? 'border-primary border-2 scale-95 shadow-md shadow-primary/10' : 'border-borderSubtle opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+                  <img src={img} alt="thumbnail" className="w-full h-full object-cover" loading="lazy" />
                 </button>
               ))}
             </div>

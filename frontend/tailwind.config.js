@@ -13,6 +13,7 @@ module.exports = {
         "primary-dark": "var(--primary-dark)",
         dark: "var(--dark)",
         "dark-light": "var(--dark-light)",
+        "dark-elevated": "var(--dark-elevated)",
         light: "var(--light)",
         brandGray: "var(--gray)",
         white: "var(--white)",

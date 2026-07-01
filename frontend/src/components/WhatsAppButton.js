@@ -64,4 +64,4 @@ Please contact me.`;
   );
 };
 
-export default WhatsAppButton;
+export default React.memo(WhatsAppButton);

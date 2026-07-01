@@ -13,18 +13,24 @@ import CustomCursor from './components/CustomCursor';
 
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
-import ProductDetail from './pages/ProductDetail';
-import Contact from './pages/Contact';
-import About from './pages/About';
-import Gallery from './pages/Gallery';
-import CustomPlanner from './pages/CustomPlanner';
-import AdminLogin from './pages/AdminLogin';
-import AdminDashboard from './pages/AdminDashboard';
-import Services from './pages/Services';
-import CartCheckout from './pages/CartCheckout';
-import ShippingReturns from './pages/ShippingReturns';
-
 import './App.css';
+
+const ProductDetail = React.lazy(() => import('./pages/ProductDetail'));
+const Contact = React.lazy(() => import('./pages/Contact'));
+const About = React.lazy(() => import('./pages/About'));
+const Gallery = React.lazy(() => import('./pages/Gallery'));
+const CustomPlanner = React.lazy(() => import('./pages/CustomPlanner'));
+const Services = React.lazy(() => import('./pages/Services'));
+const CartCheckout = React.lazy(() => import('./pages/CartCheckout'));
+const ShippingReturns = React.lazy(() => import('./pages/ShippingReturns'));
+const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+
+const PageFallback = () => (
+  <div className="min-h-[60vh] flex items-center justify-center bg-cream dark:bg-dark">
+    <div className="w-10 h-10 border-4 border-brass/20 border-t-brass rounded-full animate-spin"></div>
+  </div>
+);
 
 // Automated page hit tracker mapping visits in MongoDB
 const AnalyticsTracker = () => {
@@ -121,20 +127,22 @@ function App() {
           <Navbar />
           
           <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/custom-planner" element={<CustomPlanner />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/cart" element={<CartCheckout />} />
-              <Route path="/shipping-returns" element={<ShippingReturns />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-            </Routes>
+            <React.Suspense fallback={<PageFallback />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/custom-planner" element={<CustomPlanner />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/cart" element={<CartCheckout />} />
+                <Route path="/shipping-returns" element={<ShippingReturns />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+              </Routes>
+            </React.Suspense>
           </main>
           
           <Footer />

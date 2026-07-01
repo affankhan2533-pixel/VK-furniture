@@ -137,6 +137,8 @@ const Home = () => {
             src="https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg"
             alt="Premium Furniture Setup"
             className="w-full h-full object-cover opacity-50 hero-bg-zoom"
+            fetchPriority="high"
+            loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#3A3028] via-black/35 to-transparent"></div>
         </div>
@@ -365,6 +367,7 @@ const Home = () => {
                 src="https://images.pexels.com/photos/31567149/pexels-photo-31567149.jpeg"
                 alt="V.K. Furniture Workshop"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
               />
             </div>
           </div>
